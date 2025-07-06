@@ -1,5 +1,5 @@
-import { createUser } from "./userRepository.js";
+import { registerUser } from "./userRepository.js";
 
-export function handleCreateUser({ firstName, lastName }) {
-	return createUser({ firstName, lastName });
+export function handleRegisterUser({ firstName, lastName }) {
+	return registerUser({ firstName, lastName });
 }

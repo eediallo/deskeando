@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import BookingModal from "../components/BookingModal";
 import DeskGrid from "../components/DeskGrid";
-import { useAppContext } from "../context/AppContext";
+import { useAppContext } from "../context/useAppContext";
 
 // API calls temporarily commented out
 // import { createBooking, deleteBooking } from '../services/apiService';

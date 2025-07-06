@@ -1,5 +1,5 @@
 import * as repository from "./desksRepository.js";
 
-export async function getDesks() {
+export function getDesks() {
 	return repository.getAll();
 }

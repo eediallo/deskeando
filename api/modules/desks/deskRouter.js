@@ -4,8 +4,8 @@ import { getDesks } from "./deskService.js";
 
 const router = Router();
 
-router.get("/", async (_, res) => {
-	res.send(await getDesks());
+router.get("/", (_, res) => {
+	res.send(getDesks());
 });
 
 export default router;

@@ -9,6 +9,8 @@ const api = Router();
 
 api.use("/message", messageRouter);
 
+api.use("/v1/users", userRouter);
+
 api.use("/v1/desks", deskRouter);
 
 api.use("/v1/bookings", bookingRouter);

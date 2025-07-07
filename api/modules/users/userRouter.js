@@ -1,7 +1,12 @@
 import { Router } from "express";
 
-import { handleRegisterUser } from "./userService.js";
+import { handleRegisterUser, getUsers } from "./userService.js";
+
 const router = Router();
+
+router.get("/", (_, res) => {
+	res.send(getUsers());
+});
 
 router.post("/register_user", (req, res) => {
 	const { firstName, lastName } = req.body;

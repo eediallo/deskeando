@@ -1,4 +1,4 @@
-/* import { Router } from "express";
+import { Router } from "express";
 
 import { getMessage } from "./messageService.js";
 
@@ -8,4 +8,4 @@ router.get("/", async (_, res) => {
 	res.send(await getMessage());
 });
 
-export default router; */
+export default router;

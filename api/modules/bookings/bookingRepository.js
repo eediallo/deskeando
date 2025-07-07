@@ -1,5 +1,9 @@
 import { bookings } from "../../fixtures/bookings.js";
 
+export function getAll() {
+	return bookings;
+}
+
 export function getBookingsForDate(date) {
 	return bookings.filter((b) => b.from_date.startsWith(date));
 }

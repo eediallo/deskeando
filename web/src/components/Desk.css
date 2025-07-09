@@ -1,0 +1,21 @@
+.desk {
+	width: 100px;
+	height: 100px;
+	border: 1px solid #ccc;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+}
+
+.desk-available {
+	background-color: #90ee90;
+}
+
+.desk-unavailable {
+	background-color: #d3d3d3;
+}
+
+.desk-user-booked {
+	background-color: #87ceeb;
+}

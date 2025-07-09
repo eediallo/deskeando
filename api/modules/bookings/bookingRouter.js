@@ -1,4 +1,8 @@
 import { Router } from "express";
+import { StatusCodes } from "http-status-codes";
+
+import { ApiError } from "../../Errors/ApiError.js";
+import { asyncWrapper } from "../../middlewares/asyncWrapper.js";
 
 import {
 	handleCreateBooking,
@@ -9,39 +13,53 @@ import {
 
 const router = Router();
 
-router.get("/", (_, res) => {
-	res.send(getAllBookings());
-});
+router.get(
+	"/",
+	asyncWrapper(async (_, res) => {
+		const bookings = await getAllBookings();
+		res.status(StatusCodes.OK).json(bookings);
+	}),
+);
 
-// Not RESTful - should be POST /api/v1/bookings - might consider changing it
-router.post("/create_booking", (req, res) => {
-	const { user_id, desk_id } = req.body;
+router.post(
+	"/create_booking",
+	asyncWrapper(async (req, res) => {
+		const { user_id, desk_id, date } = req.body;
 
-	if (!user_id || !desk_id) {
-		return res.status(400).json({ error: "Missing user_id or desk_id" });
-	}
+		if (!user_id || !desk_id) {
+			throw new ApiError("Missing user_id or desk_id", StatusCodes.BAD_REQUEST);
+		}
 
-	const booking = handleCreateBooking({ user_id, desk_id });
-	res.status(201).json(booking);
-});
+		const booking = await handleCreateBooking({ user_id, desk_id, date });
+		res.status(StatusCodes.CREATED).json(booking);
+	}),
+);
 
-router.delete("/delete_booking/:id", (req, res) => {
-	const bookingId = Number(req.params.id);
-	const { user_id } = req.body;
-	const booking = getBookingById(bookingId);
+router.delete(
+	"/delete_booking/:id",
+	asyncWrapper(async (req, res) => {
+		const bookingId = Number(req.params.id);
+		if (isNaN(bookingId)) {
+			throw new ApiError("Invalid booking ID", StatusCodes.BAD_REQUEST);
+		}
 
-	if (!booking) {
-		return res.status(404).json({ error: "Booking not found!" });
-	}
+		const { user_id } = req.body;
 
-	if (user_id && booking.user_id !== user_id) {
-		return res
-			.status(403)
-			.json({ error: "Unauthorized to delete this booking" });
-	}
+		const booking = await getBookingById(bookingId);
+		if (!booking) {
+			throw new ApiError("Booking not found!", StatusCodes.NOT_FOUND);
+		}
 
-	deleteBookingById(bookingId);
-	res.status(204).send();
-});
+		if (user_id && booking.user_id !== user_id) {
+			throw new ApiError(
+				"Unauthorized to delete this booking",
+				StatusCodes.FORBIDDEN,
+			);
+		}
+
+		await deleteBookingById(bookingId);
+		res.status(StatusCodes.NO_CONTENT).send();
+	}),
+);
 
 export default router;

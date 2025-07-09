@@ -1,22 +1,24 @@
 import { bookings } from "../../fixtures/bookings.js";
 
-export function getAll() {
+export async function getAll() {
 	return bookings;
 }
 
-export function getBookingsForDate(date) {
+export async function getBookingsForDate(date) {
 	return bookings.filter((b) => b.from_date.startsWith(date));
 }
 
-export function isDeskBookedOnDate(desk_id, date) {
-	return getBookingsForDate(date).some((b) => b.desk_id === desk_id);
+export async function isDeskBookedOnDate(desk_id, date) {
+	const dateBookings = await getBookingsForDate(date);
+	return dateBookings.some((b) => b.desk_id === desk_id);
 }
 
-export function isUserBookedOnDate(user_id, date) {
-	return getBookingsForDate(date).some((b) => b.user_id === user_id);
+export async function isUserBookedOnDate(user_id, date) {
+	const dateBookings = await getBookingsForDate(date);
+	return dateBookings.some((b) => b.user_id === user_id);
 }
 
-export function createBooking({ user_id, desk_id, date }) {
+export async function createBooking({ user_id, desk_id, date }) {
 	const from_date = new Date(date + "T13:00:00").toISOString();
 	const to_date = new Date(date + "T19:00:00").toISOString();
 

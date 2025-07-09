@@ -1,3 +1,7 @@
+import { StatusCodes } from "http-status-codes";
+
+import { ApiError } from "../../Errors/ApiError.js";
+
 import {
 	getAll,
 	isUserBookedOnDate,
@@ -5,33 +9,44 @@ import {
 	createBooking,
 } from "./bookingRepository.js";
 
-export function getAllBookings() {
-	return getAll();
+export async function getAllBookings() {
+	return await getAll();
 }
 
-export function handleCreateBooking({ user_id, desk_id, date }) {
+export async function handleCreateBooking({ user_id, desk_id, date }) {
 	const bookingDate = date
 		? new Date(date).toISOString().slice(0, 10)
 		: new Date().toISOString().slice(0, 10);
 
-	if (isUserBookedOnDate(user_id, bookingDate)) {
-		throw new Error("User already has a booking for this date.");
+	if (await isUserBookedOnDate(user_id, bookingDate)) {
+		throw new ApiError(
+			"User already has a booking for this date.",
+			StatusCodes.CONFLICT,
+		);
 	}
-	if (isDeskBookedOnDate(desk_id, bookingDate)) {
-		throw new Error("Desk is already booked for this date.");
+
+	if (await isDeskBookedOnDate(desk_id, bookingDate)) {
+		throw new ApiError(
+			"Desk is already booked for this date.",
+			StatusCodes.CONFLICT,
+		);
 	}
-	return createBooking({ user_id, desk_id, date: bookingDate });
+
+	return await createBooking({ user_id, desk_id, date: bookingDate });
 }
 
-export function getBookingById(id) {
-	return getAll().find((b) => b.id === parseInt(id, 10));
+export async function getBookingById(id) {
+	const all = await getAll();
+	return all.find((b) => b.booking_id === parseInt(id, 10));
 }
 
-export function deleteBookingById(id) {
-	const index = getAll().findIndex((b) => b.id === parseInt(id, 10));
+export async function deleteBookingById(id) {
+	const all = await getAll();
+	const index = all.findIndex((b) => b.booking_id === parseInt(id, 10));
+
 	if (index !== -1) {
-		getAll().splice(index, 1);
+		all.splice(index, 1);
 	} else {
-		throw new Error("Booking not found!");
+		throw new ApiError("Booking not found!", StatusCodes.NOT_FOUND);
 	}
 }

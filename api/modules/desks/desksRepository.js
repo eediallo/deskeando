@@ -1,5 +1,5 @@
 import { desks } from "../../fixtures/desks.js";
 
-export function getAll() {
+export async function getAll() {
 	return desks;
 }

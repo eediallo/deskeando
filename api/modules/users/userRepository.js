@@ -7,8 +7,8 @@ export function getAll() {
 export function registerUser({ firstName, lastName }) {
 	const user = {
 		id: Math.floor(Math.random() * 1000000),
-		firstName: firstName,
-		lastName: lastName,
+		firstName,
+		lastName,
 	};
 
 	users.push(user);

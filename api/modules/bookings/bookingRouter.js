@@ -13,28 +13,31 @@ router.get("/", (_, res) => {
 	res.send(getAllBookings());
 });
 
-// Not RESTful - should be POST /api/v1/bookings - might consider changing it
-router.post("/create_booking", (req, res) => {
-	const { user_id, desk_id } = req.body;
+router.post("/", (req, res) => {
+	const { userId, deskId } = req.body;
 
-	if (!user_id || !desk_id) {
-		return res.status(400).json({ error: "Missing user_id or desk_id" });
+	if (!userId || !deskId) {
+		return res.status(400).json({ error: "Missing userId or deskId" });
 	}
 
-	const booking = handleCreateBooking({ user_id, desk_id });
-	res.status(201).json(booking);
+	try {
+		const booking = handleCreateBooking({ userId, deskId });
+		res.status(201).json(booking);
+	} catch (err) {
+		res.status(400).json({ error: err.message });
+	}
 });
 
-router.delete("/delete_booking/:id", (req, res) => {
+router.delete("/:id", (req, res) => {
 	const bookingId = Number(req.params.id);
-	const { user_id } = req.body;
+	const { userId } = req.body;
 	const booking = getBookingById(bookingId);
 
 	if (!booking) {
 		return res.status(404).json({ error: "Booking not found!" });
 	}
 
-	if (user_id && booking.user_id !== user_id) {
+	if (userId && booking.userId !== userId) {
 		return res
 			.status(403)
 			.json({ error: "Unauthorized to delete this booking" });

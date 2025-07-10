@@ -21,7 +21,10 @@ router.post("/", (req, res) => {
 	}
 
 	try {
-		const booking = handleCreateBooking({ userId, deskId });
+		const booking = handleCreateBooking({
+			userId: String(userId),
+			deskId: String(deskId),
+		});
 		res.status(201).json(booking);
 	} catch (err) {
 		const status = err.status || 400;
@@ -30,7 +33,7 @@ router.post("/", (req, res) => {
 });
 
 router.delete("/:id", (req, res) => {
-	const bookingId = Number(req.params.id);
+	const bookingId = req.params.id;
 	const { userId } = req.body;
 	const booking = getBookingById(bookingId);
 

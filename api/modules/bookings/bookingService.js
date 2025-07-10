@@ -28,11 +28,11 @@ export function handleCreateBooking({ userId, deskId, date }) {
 }
 
 export function getBookingById(id) {
-	return getAll().find((b) => b.id === parseInt(id, 10));
+	return getAll().find((b) => b.id === id);
 }
 
 export function deleteBookingById(id) {
-	const index = getAll().findIndex((b) => b.id === parseInt(id, 10));
+	const index = getAll().findIndex((b) => b.id === id);
 	if (index !== -1) {
 		getAll().splice(index, 1);
 	} else {

@@ -6,7 +6,7 @@ export function getAll() {
 
 export function registerUser({ firstName, lastName }) {
 	const user = {
-		id: Math.floor(Math.random() * 1000000),
+		id: String(Math.floor(Math.random() * 1000000)),
 		firstName,
 		lastName,
 	};

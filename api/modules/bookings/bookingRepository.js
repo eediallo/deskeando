@@ -9,11 +9,11 @@ export function getBookingsForDate(date) {
 }
 
 export function isDeskBookedOnDate(deskId, date) {
-	return getBookingsForDate(date).some((b) => b.deskId === deskId);
+	return getBookingsForDate(date).some((b) => b.deskId === String(deskId));
 }
 
 export function isUserBookedOnDate(userId, date) {
-	return getBookingsForDate(date).some((b) => b.userId === userId);
+	return getBookingsForDate(date).some((b) => b.userId === String(userId));
 }
 
 export function createBooking({ userId, deskId, date }) {
@@ -21,9 +21,9 @@ export function createBooking({ userId, deskId, date }) {
 	const toDate = new Date(date + "T19:00:00").toISOString();
 
 	const booking = {
-		id: Math.floor(Math.random() * 1000000),
-		userId,
-		deskId,
+		id: String(Math.floor(Math.random() * 1000000)),
+		userId: String(userId),
+		deskId: String(deskId),
 		fromDate,
 		toDate,
 	};

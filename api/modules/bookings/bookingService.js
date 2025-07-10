@@ -1,15 +1,17 @@
 import {
 	getAll,
+	getOneBookingById,
+	deleteOneBookingById,
 	isUserBookedOnDate,
 	isDeskBookedOnDate,
 	createBooking,
 } from "./bookingRepository.js";
 
-export function getAllBookings() {
-	return getAll();
+export async function getAllBookings() {
+	return await getAll();
 }
 
-export function handleCreateBooking({ user_id, desk_id, date }) {
+export async function handleCreateBooking({ user_id, desk_id, date }) {
 	const bookingDate = date
 		? new Date(date).toISOString().slice(0, 10)
 		: new Date().toISOString().slice(0, 10);
@@ -20,18 +22,13 @@ export function handleCreateBooking({ user_id, desk_id, date }) {
 	if (isDeskBookedOnDate(desk_id, bookingDate)) {
 		throw new Error("Desk is already booked for this date.");
 	}
-	return createBooking({ user_id, desk_id, date: bookingDate });
+	return await createBooking({ user_id, desk_id, date: bookingDate });
 }
 
-export function getBookingById(id) {
-	return getAll().find((b) => b.id === parseInt(id, 10));
+export async function getBookingById(id) {
+	return await getOneBookingById(id);
 }
 
-export function deleteBookingById(id) {
-	const index = getAll().findIndex((b) => b.id === parseInt(id, 10));
-	if (index !== -1) {
-		getAll().splice(index, 1);
-	} else {
-		throw new Error("Booking not found!");
-	}
+export async function deleteBookingById(id) {
+	return await deleteOneBookingById(id);
 }

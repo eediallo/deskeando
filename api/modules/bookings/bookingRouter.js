@@ -24,7 +24,8 @@ router.post("/", (req, res) => {
 		const booking = handleCreateBooking({ userId, deskId });
 		res.status(201).json(booking);
 	} catch (err) {
-		res.status(400).json({ error: err.message });
+		const status = err.status || 400;
+		res.status(status).json({ error: err.message });
 	}
 });
 

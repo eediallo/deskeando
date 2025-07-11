@@ -1,13 +1,15 @@
 import db from "../../db.js";
 
 export async function getAll() {
-	const { rows } = await db.query("SELECT * FROM bookings;");
+	const { rows } = await db.query(
+		"SELECT * FROM bookings b JOIN users u ON b.user_id = u.user_id JOIN desks d ON b.desk_id = d.desk_id;",
+	);
 	return rows;
 }
 
 export async function getBookingsForDate(date) {
 	const { rows } = await db.query(
-		"SELECT * FROM bookings WHERE from_date = $1;",
+		"SELECT * FROM bookings b JOIN users u ON b.user_id = u.user_id JOIN desks d ON b.desk_id = d.desk_id WHERE from_date = $1;",
 		[date],
 	);
 	return rows;
@@ -31,7 +33,7 @@ export async function isUserBookedOnDate(userId, date) {
 
 export async function getOneBookingById(id) {
 	const { rows } = await db.query(
-		"SELECT * FROM bookings WHERE book_id = $1;",
+		"SELECT * FROM bookings b JOIN users u ON b.user_id = u.user_id JOIN desks d ON b.desk_id = d.desk_id WHERE book_id = $1;",
 		[id],
 	);
 	return rows;

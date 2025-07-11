@@ -4,8 +4,8 @@ import { getUsers } from "./userService.js";
 
 const router = Router();
 
-router.get("/", (_, res) => {
-	res.send(getUsers());
+router.get("/", async (_, res) => {
+	res.send(await getUsers());
 });
 
 export default router;

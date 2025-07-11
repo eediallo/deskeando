@@ -1,16 +1,18 @@
-import { users } from "../../fixtures/users.js";
+import db from "../../db.js";
 
-export function getAll() {
-	return users;
+export async function getAll() {
+	const { rows } = await db.query("SELECT * FROM users;");
+	return rows;
 }
 
-export function registerUser({ firstName, lastName }) {
-	const user = {
-		id: String(Math.floor(Math.random() * 1000000)),
-		firstName,
-		lastName,
-	};
+export async function registerUser({ firstName, lastName }) {
+	const query = `
+		   INSERT INTO bookings (fist_name, last_name)
+		   VALUES ($1, $2)
+		   RETURNING *;
+	   `;
 
-	users.push(user);
-	return user;
+	const values = [firstName, lastName];
+	const { rows } = await db.query(query, values);
+	return rows[0];
 }

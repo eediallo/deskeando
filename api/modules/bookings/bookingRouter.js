@@ -9,11 +9,11 @@ import {
 
 const router = Router();
 
-router.get("/", (_, res) => {
-	res.send(getAllBookings());
+router.get("/", async (_, res) => {
+	res.send(await getAllBookings());
 });
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
 	const { userId, deskId } = req.body;
 
 	if (!userId || !deskId) {
@@ -21,7 +21,7 @@ router.post("/", (req, res) => {
 	}
 
 	try {
-		const booking = handleCreateBooking({
+		const booking = await handleCreateBooking({
 			userId: String(userId),
 			deskId: String(deskId),
 		});
@@ -32,10 +32,10 @@ router.post("/", (req, res) => {
 	}
 });
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", async (req, res) => {
 	const bookingId = req.params.id;
 	const { userId } = req.body;
-	const booking = getBookingById(bookingId);
+	const booking = await getBookingById(bookingId);
 
 	if (!booking) {
 		return res.status(404).json({ error: "Booking not found!" });
@@ -47,7 +47,7 @@ router.delete("/:id", (req, res) => {
 			.json({ error: "Unauthorized to delete this booking" });
 	}
 
-	deleteBookingById(bookingId);
+	await deleteBookingById(bookingId);
 	res.status(204).send();
 });
 

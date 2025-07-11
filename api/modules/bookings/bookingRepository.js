@@ -1,33 +1,60 @@
-import { bookings } from "../../fixtures/bookings.js";
+import db from "../../db.js";
 
-export function getAll() {
-	return bookings;
+export async function getAll() {
+	const { rows } = await db.query("SELECT * FROM bookings;");
+	return rows;
 }
 
-export function getBookingsForDate(date) {
-	return bookings.filter((b) => b.fromDate.startsWith(date));
+export async function getBookingsForDate(date) {
+	const { rows } = await db.query(
+		"SELECT * FROM bookings WHERE from_date = $1;",
+		[date],
+	);
+	return rows;
 }
 
-export function isDeskBookedOnDate(deskId, date) {
-	return getBookingsForDate(date).some((b) => b.deskId === String(deskId));
+export async function isDeskBookedOnDate(deskId, date) {
+	const { rows } = await db.query(
+		"SELECT 1 FROM bookings WHERE desk_id = $1 AND from_date = $2 LIMIT 1;",
+		[deskId, date],
+	);
+	return rows.length > 0;
 }
 
-export function isUserBookedOnDate(userId, date) {
-	return getBookingsForDate(date).some((b) => b.userId === String(userId));
+export async function isUserBookedOnDate(userId, date) {
+	const { rows } = await db.query(
+		"SELECT 1 FROM bookings WHERE user_id = $1 AND from_date = $2 LIMIT 1;",
+		[userId, date],
+	);
+	return rows.length > 0;
 }
 
-export function createBooking({ userId, deskId, date }) {
-	const fromDate = new Date(date + "T13:00:00").toISOString();
-	const toDate = new Date(date + "T19:00:00").toISOString();
+export async function getOneBookingById(id) {
+	const { rows } = await db.query(
+		"SELECT * FROM bookings WHERE book_id = $1;",
+		[id],
+	);
+	return rows;
+}
 
-	const booking = {
-		id: String(Math.floor(Math.random() * 1000000)),
-		userId: String(userId),
-		deskId: String(deskId),
-		fromDate,
-		toDate,
-	};
+export async function deleteOneBookingById(id) {
+	const { rows } = await db.query(
+		"DELETE FROM bookings WHERE book_id = $1 RETURNING *;",
+		[id],
+	);
+	return rows;
+}
 
-	bookings.push(booking);
-	return booking;
+export async function createBooking({ userId, deskId, date }) {
+	const fromDate = new Date(`${date}T13:00:00Z`).toISOString();
+	const toDate = new Date(`${date}T19:00:00Z`).toISOString();
+
+	const query = `
+       INSERT INTO bookings (user_id, desk_id, from_date, to_date)
+       VALUES ($1, $2, $3, $4)
+       RETURNING *;
+   `;
+	const values = [userId, deskId, fromDate, toDate];
+	const { rows } = await db.query(query, values);
+	return rows[0];
 }

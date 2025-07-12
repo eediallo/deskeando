@@ -16,12 +16,12 @@ export async function handleCreateBooking({ userId, deskId, date }) {
 		? new Date(date).toISOString().slice(0, 10)
 		: new Date().toISOString().slice(0, 10);
 
-	if (isUserBookedOnDate(userId, bookingDate)) {
+	if (await isUserBookedOnDate(userId, bookingDate)) {
 		const error = new Error("User already has a booking for this date.");
 		error.status = 409;
 		throw error;
 	}
-	if (isDeskBookedOnDate(deskId, bookingDate)) {
+	if (await isDeskBookedOnDate(deskId, bookingDate)) {
 		const error = new Error("Desk is already booked for this date.");
 		error.status = 409;
 		throw error;

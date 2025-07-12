@@ -7,7 +7,7 @@ export async function getAll() {
 
 export async function registerUser({ firstName, lastName }) {
 	const query = `
-		   INSERT INTO bookings (fist_name, last_name)
+		   INSERT INTO users (first_name, last_name)
 		   VALUES ($1, $2)
 		   RETURNING *;
 	   `;

@@ -1,19 +1,59 @@
 import { Router } from "express";
 
-import { handleCreateBooking } from "./bookingService.js";
+import {
+	handleCreateBooking,
+	getAllBookings,
+	deleteBookingById,
+	getBookingById,
+} from "./bookingService.js";
 
 const router = Router();
 
-// Not RESTful - should be POST /api/v1/bookings - might consider changing it
-router.post("/create_booking", (req, res) => {
-	const { user_id, desk_id } = req.body;
+router.get("/", async (_, res) => {
+	res.send(await getAllBookings());
+});
 
-	if (!user_id || !desk_id) {
-		return res.status(400).json({ error: "Missing user_id or desk_id" });
+router.post("/", async (req, res) => {
+	const { userId, deskId } = req.body;
+
+	if (!userId || !deskId) {
+		return res.status(400).json({ error: "Missing userId or deskId" });
 	}
 
-	const booking = handleCreateBooking({ user_id, desk_id });
-	res.status(201).json(booking);
+	try {
+		const now = new Date();
+		now.setUTCHours(13, 0, 0, 0);
+		const bookingDate = now.toISOString();
+
+		const booking = await handleCreateBooking({
+			userId: String(userId),
+			deskId: String(deskId),
+			date: bookingDate,
+		});
+		res.status(201).json(booking);
+	} catch (err) {
+		const status = err.status || 400;
+		res.status(status).json({ error: err.message });
+	}
+});
+
+router.delete("/:id", async (req, res) => {
+	const bookingId = req.params.id;
+	const { userId } = req.body;
+	const booking = await getBookingById(bookingId);
+
+	if (!booking) {
+		return res.status(404).json({ error: "Booking not found!" });
+	}
+
+	if (userId && booking.userId !== userId) {
+		return res
+			.status(403)
+			.json({ error: "Unauthorized to delete this booking" });
+	}
+
+	await deleteBookingById(bookingId);
+	res.status(204).send();
 });
 
 export default router;

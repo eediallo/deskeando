@@ -1,19 +1,35 @@
 import {
+	getAll,
+	getOneBookingById,
+	deleteOneBookingById,
 	isUserBookedOnDate,
 	isDeskBookedOnDate,
 	createBooking,
 } from "./bookingRepository.js";
 
-export function handleCreateBooking({ user_id, desk_id, date }) {
-	const bookingDate = date
-		? new Date(date).toISOString().slice(0, 10)
-		: new Date().toISOString().slice(0, 10);
+export async function getAllBookings() {
+	return await getAll();
+}
 
-	if (isUserBookedOnDate(user_id, bookingDate)) {
-		throw new Error("User already has a booking for this date.");
+export async function handleCreateBooking({ userId, deskId, date }) {
+	if (await isUserBookedOnDate(userId, date)) {
+		const error = new Error("User already has a booking for this date.");
+		error.status = 409;
+		throw error;
 	}
-	if (isDeskBookedOnDate(desk_id, bookingDate)) {
-		throw new Error("Desk is already booked for this date.");
+
+	if (await isDeskBookedOnDate(deskId, date)) {
+		const error = new Error("Desk is already booked for this date.");
+		error.status = 409;
+		throw error;
 	}
-	return createBooking({ user_id, desk_id, date: bookingDate });
+	return await createBooking({ userId, deskId, date: date });
+}
+
+export async function getBookingById(id) {
+	return await getOneBookingById(id);
+}
+
+export async function deleteBookingById(id) {
+	return await deleteOneBookingById(id);
 }

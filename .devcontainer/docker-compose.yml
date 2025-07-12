@@ -17,6 +17,9 @@ services:
     image: postgres:17-alpine
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_USER: owner
+      # POSTGRES_PASSWORD: npg_niw6tjgxP3YO
+      POSTGRES_DB: deskeando
     ports:
       - "5432:5432"
     restart: unless-stopped

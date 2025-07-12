@@ -1,5 +1,6 @@
-import { desks } from "../../fixtures/desks.js";
+import db from "../../db.js";
 
-export function getAll() {
-	return desks;
+export async function getAll() {
+	const { rows } = await db.query("SELECT * FROM desk;");
+	return rows;
 }

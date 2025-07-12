@@ -1,13 +1,13 @@
 import db from "../../db.js";
 
 export async function getAll() {
-	const { rows } = await db.query("SELECT * FROM users;");
+	const { rows } = await db.query('SELECT * FROM "user";');
 	return rows;
 }
 
 export async function registerUser({ firstName, lastName }) {
 	const query = `
-		   INSERT INTO users (first_name, last_name)
+		   INSERT INTO "user" (first_name, last_name)
 		   VALUES ($1, $2)
 		   RETURNING *;
 	   `;

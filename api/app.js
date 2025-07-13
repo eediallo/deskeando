@@ -1,3 +1,7 @@
+// For __dirname in ES modules
+import path from "path";
+import { fileURLToPath } from "url";
+
 import express from "express";
 
 import apiRouter from "./api.js";
@@ -13,9 +17,18 @@ import {
 
 const API_ROOT = "/api";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 
 app.use(express.json());
+
+// Serve Redoc static HTML at /api/docs
+app.get("/api/docs", (req, res) => {
+	res.sendFile(path.resolve(__dirname, "../redoc-static.html"));
+});
+
 app.use(configuredHelmet());
 app.use(configuredMorgan());
 

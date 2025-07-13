@@ -39,21 +39,30 @@ router.post("/", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
 	const bookingId = req.params.id;
-	const { userId } = req.body;
-	const booking = await getBookingById(bookingId);
+	const userId = req.body?.userId;
+	try {
+		const booking = await getBookingById(bookingId);
 
-	if (!booking) {
-		return res.status(404).json({ error: "Booking not found!" });
+		if (!booking) {
+			return res.status(404).json({ error: "Booking not found!" });
+		}
+
+		if (userId && booking.user_id !== userId) {
+			return res
+				.status(403)
+				.json({ error: "Unauthorized to delete this booking" });
+		}
+
+		const deleted = await deleteBookingById(bookingId);
+		if (!deleted) {
+			return res
+				.status(404)
+				.json({ error: "Booking not found or already deleted!" });
+		}
+		res.status(204).send();
+	} catch (err) {
+		res.status(500).json({ error: err.message });
 	}
-
-	if (userId && booking.userId !== userId) {
-		return res
-			.status(403)
-			.json({ error: "Unauthorized to delete this booking" });
-	}
-
-	await deleteBookingById(bookingId);
-	res.status(204).send();
 });
 
 export default router;

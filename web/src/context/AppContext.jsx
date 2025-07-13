@@ -1,42 +1,39 @@
 import PropTypes from "prop-types";
-/* eslint-disable no-unused-vars */
-import React, { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 
-// Using mock data
-import { mockUsers, mockDesks, mockBookings } from "../services/mockData.js";
-
-// API call temporarily commented out
-// import { getUsers, getDesks, getBookings } from "../services/apiService";
+import { getUsers, getDesks, getBookings } from "../services/apiService";
 
 const AppContext = createContext();
-
 export { AppContext };
 
 export const AppProvider = ({ children }) => {
-	// Using mock data for state initialization
-	const [users, setUsers] = useState(mockUsers);
-	const [desks, setDesks] = useState(mockDesks);
-	const [bookings, setBookings] = useState(mockBookings);
-	const [loading, setLoading] = useState(false); // Set to false as we are using mock data
+	const [users, setUsers] = useState([]);
+	const [desks, setDesks] = useState([]);
+	const [bookings, setBookings] = useState([]);
+	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
 
-	// The useEffect for fetching data and polling is commented out for now.
-	// When the API is ready, this section can be uncommented and the mock data
-	// initialization above can be replaced with empty arrays.
-	/*
 	useEffect(() => {
 		const fetchData = async () => {
+			setLoading(true);
 			try {
 				const [usersData, desksData, bookingsData] = await Promise.all([
 					getUsers(),
 					getDesks(),
 					getBookings(),
 				]);
-				setUsers(usersData);
+				setUsers(
+					usersData.map((u) => ({
+						...u,
+						firstName: u.first_name,
+						lastName: u.last_name,
+					})),
+				);
 				setDesks(desksData);
 				setBookings(bookingsData);
-			} catch (error) {
-				setError(error);
+				setError(null);
+			} catch (err) {
+				setError(err);
 			} finally {
 				setLoading(false);
 			}
@@ -44,14 +41,12 @@ export const AppProvider = ({ children }) => {
 
 		fetchData();
 
-		// Live updates polling
 		const intervalId = setInterval(() => {
 			getBookings().then(setBookings).catch(setError);
-		}, 5000); // Poll every 5 seconds
+		}, 5000);
 
 		return () => clearInterval(intervalId);
 	}, []);
-	*/
 
 	return (
 		<AppContext.Provider

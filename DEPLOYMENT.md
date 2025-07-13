@@ -8,6 +8,8 @@ This project supports both development and production environments with differen
 
 For local development with Docker database:
 
+make sure Docker is running first.
+
 ```bash
 # Quick setup
 npm run setup:dev

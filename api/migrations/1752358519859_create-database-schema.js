@@ -73,12 +73,20 @@ export async function up(pgm) {
 	// Insert initial data for desks
 	pgm.sql(`
 		INSERT INTO "desk" (id, name) VALUES
-		('b142a09d-76f7-4140-a401-52a7bc5f22c5','Desk A'),
-		('5edac634-6a5b-4f38-89d0-b10161e66186', 'Desk B'),
-		('7c5fa573-16bf-4b91-b90a-3c8303a6e14f', 'Desk C'),
-		('db4f01e4-9d64-4732-a099-9664db206f08','Desk D'),
-		('5b3d6606-4dd1-4e01-92fb-889303c5939a','Desk E');
+		('b142a09d-76f7-4140-a401-52a7bc5f22c5','Desk 1'),
+		('5edac634-6a5b-4f38-89d0-b10161e66186', 'Desk 2'),
+		('7c5fa573-16bf-4b91-b90a-3c8303a6e14f', 'Desk 3'),
+		('db4f01e4-9d64-4732-a099-9664db206f08','Desk 4'),
+		('5b3d6606-4dd1-4e01-92fb-889303c5939a','Desk 5');
 	`);
+
+	// insert rest of initial data for desks
+	pgm.sql(`
+        INSERT INTO "desk" (name)
+        VALUES
+        ${Array.from({ length: 45 }, (_, i) => `('Desk ${i + 6}')`).join(",\n")}
+    ;
+    `);
 
 	// Insert initial data for users
 	pgm.sql(`

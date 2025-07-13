@@ -16,3 +16,6 @@ GEMINI.md
 .env.*.local
 .env.development
 .env.production
+jsonToOpenAPI.js
+openapi.json
+openapi.yaml

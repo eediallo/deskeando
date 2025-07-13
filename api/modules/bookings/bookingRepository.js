@@ -36,7 +36,7 @@ export async function getOneBookingById(id) {
 		'SELECT b.id AS booking_id, b.desk_id, b.user_id, b.from_date, b.to_date, u.first_name, u.last_name, d.name AS desk_name FROM booking b JOIN "user" u ON b.user_id = u.id JOIN desk d ON b.desk_id = d.id WHERE b.id = $1;',
 		[id],
 	);
-	return rows;
+	return rows[0] || null;
 }
 
 export async function deleteOneBookingById(id) {
@@ -44,7 +44,7 @@ export async function deleteOneBookingById(id) {
 		"DELETE FROM booking WHERE id = $1 RETURNING *;",
 		[id],
 	);
-	return rows;
+	return rows[0] || null;
 }
 
 export async function createBooking({ userId, deskId, date }) {
@@ -53,9 +53,9 @@ export async function createBooking({ userId, deskId, date }) {
 	const toDate = now.toISOString();
 
 	const query = `
-       INSERT INTO booking (user_id, desk_id, from_date, to_date)
-       VALUES ($1, $2, $3, $4)
-       RETURNING *;
+	   INSERT INTO booking (user_id, desk_id, from_date, to_date)
+	   VALUES ($1, $2, $3, $4)
+	   RETURNING *;
    `;
 	const values = [userId, deskId, date, toDate];
 	const { rows } = await db.query(query, values);

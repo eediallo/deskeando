@@ -1,17 +1,16 @@
-/*
 const API_BASE_URL = "/api/v1";
 
 export async function getUsers() {
-	// API call temporarily commented out
 	const response = await fetch(`${API_BASE_URL}/users`);
 	if (!response.ok) {
 		throw new Error("Failed to fetch users");
 	}
-	return response.json();
+	const data = await response.json();
+	console.log(data, "<======="); // Uncomment if you want to log
+	return data;
 }
 
 export async function getDesks() {
-	// API call temporarily commented out
 	const response = await fetch(`${API_BASE_URL}/desks`);
 	if (!response.ok) {
 		throw new Error("Failed to fetch desks");
@@ -20,16 +19,14 @@ export async function getDesks() {
 }
 
 export async function getBookings() {
-	// API call temporarily commented out
-	// const response = await fetch(`${API_BASE_URL}/bookings`);
-	// if (!response.ok) {
-	// 	throw new Error("Failed to fetch bookings");
-	// }
-	// return response.json();
+	const response = await fetch(`${API_BASE_URL}/bookings`);
+	if (!response.ok) {
+		throw new Error("Failed to fetch bookings");
+	}
+	return response.json();
 }
 
 export async function createBooking(bookingData) {
-	// API call temporarily commented out
 	const response = await fetch(`${API_BASE_URL}/bookings/create_booking`, {
 		method: "POST",
 		headers: {
@@ -44,7 +41,6 @@ export async function createBooking(bookingData) {
 }
 
 export async function deleteBooking(bookingId) {
-	// API call temporarily commented out
 	const response = await fetch(
 		`${API_BASE_URL}/bookings/delete_booking/${bookingId}`,
 		{
@@ -56,5 +52,3 @@ export async function deleteBooking(bookingId) {
 	}
 	return response.json();
 }
-
-*/

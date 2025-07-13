@@ -23,11 +23,15 @@ fi
 
 # Install dependencies
 echo "Installing dependencies..."
-npm ci --only=production
+npm ci
 
 # Build the frontend
 echo "Building frontend..."
 npm run build
+
+# Remove dev dependencies after build (optional)
+echo "Pruning dev dependencies..."
+npm prune --omit=dev
 
 # Run database migrations
 echo "Running database migrations..."

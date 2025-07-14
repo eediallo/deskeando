@@ -1,7 +1,12 @@
 import { registerUser, getAll } from "./userRepository.js";
 
-export async function handleRegisterUser({ firstName, lastName }) {
-	return await registerUser({ firstName, lastName });
+export async function handleRegisterUser({
+	firstName,
+	lastName,
+	email,
+	password,
+}) {
+	return await registerUser({ firstName, lastName, email, password });
 }
 
 export async function getUsers() {

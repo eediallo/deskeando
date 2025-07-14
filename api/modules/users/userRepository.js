@@ -5,14 +5,14 @@ export async function getAll() {
 	return rows;
 }
 
-export async function registerUser({ firstName, lastName }) {
+export async function registerUser({ firstName, lastName, email, password }) {
 	const query = `
-		   INSERT INTO "user" (first_name, last_name)
-		   VALUES ($1, $2)
+		   INSERT INTO "user" (first_name, last_name, email, password)
+		   VALUES ($1, $2, $3, $4)
 		   RETURNING *;
 	   `;
 
-	const values = [firstName, lastName];
+	const values = [firstName, lastName, email, password];
 	const { rows } = await db.query(query, values);
 	return rows[0];
 }

@@ -24,8 +24,10 @@ const app = express();
 
 app.use(express.json());
 
-// Serve static files (including redoc-static.html) at /api/static
-app.use("/api/static", express.static(path.resolve(__dirname, "static")));
+// Serve the Redoc API docs HTML directly at /api/docs
+app.get("/api/docs", (req, res) => {
+	res.sendFile(path.resolve(__dirname, "static/api-docs.html"));
+});
 
 app.use(configuredHelmet());
 app.use(configuredMorgan());

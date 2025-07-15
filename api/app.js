@@ -1,4 +1,5 @@
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import express from "express";
 
 import apiRouter from "./api.js";
@@ -16,6 +17,7 @@ const API_ROOT = "/api";
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 

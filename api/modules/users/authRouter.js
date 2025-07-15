@@ -29,7 +29,7 @@ authRouter.post("/register", async (req, res) => {
 });
 
 authRouter.post("/login", async (req, res) => {
-	const { user, token } = await handleLogin(req.body);
+	const { token } = await handleLogin(req.body);
 
 	res
 		.cookie("Token", token, {
@@ -38,7 +38,7 @@ authRouter.post("/login", async (req, res) => {
 			secure: config.production,
 			maxAge: 60 * 60 * 1000,
 		})
-		.json(user);
+		.json({ token });
 });
 
 export default authRouter;

@@ -79,6 +79,11 @@ export async function up(pgm) {
 		},
 	});
 
+	// Add unique constraint: only one booking per desk per date
+	pgm.addConstraint("booking", "unique_desk_date", {
+		unique: ["desk_id", "from_date"],
+	});
+
 	// Insert initial data for desks
 	pgm.sql(`
 		INSERT INTO "desk" (id, name) VALUES

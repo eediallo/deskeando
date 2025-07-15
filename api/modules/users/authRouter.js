@@ -32,7 +32,7 @@ authRouter.post("/login", async (req, res) => {
 	const { token } = await handleLogin(req.body);
 
 	res
-		.cookie("Token", token, {
+		.cookie("token", token, {
 			httpOnly: true,
 			sameSite: "Strict",
 			secure: config.production,

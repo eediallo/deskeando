@@ -1,3 +1,5 @@
+import bcrypt from "bcryptjs";
+
 import db from "../../db.js";
 
 export async function getAll() {
@@ -6,11 +8,14 @@ export async function getAll() {
 }
 
 export async function registerUser({ firstName, lastName, email, password }) {
-	if (!email || typeof email !== "string" || !email.trim()) {
-		throw new Error("Email is required");
+	const checkQuery = `SELECT id FROM "user" WHERE email = $1`;
+	const checkResult = await db.query(checkQuery, [email]);
+	if (checkResult.rows.length > 0) {
+		throw new Error("Email already in use.");
 	}
-	const bcrypt = await import("bcryptjs");
-	const hashedPassword = await bcrypt.default.hash(password, 10);
+
+	const hashedPassword = await bcrypt.hash(password, 10);
+
 	const query = `
 	   INSERT INTO "user" (first_name, last_name, email, password)
 	   VALUES ($1, $2, $3, $4)
@@ -21,6 +26,7 @@ export async function registerUser({ firstName, lastName, email, password }) {
 	const { rows } = await db.query(query, values);
 	return rows[0];
 }
+
 export async function findUserByEmail(email) {
 	const query = 'SELECT * FROM "user" WHERE email = $1';
 	const { rows } = await db.query(query, [email]);

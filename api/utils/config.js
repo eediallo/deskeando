@@ -20,7 +20,7 @@ import logger from "./logger.js";
  * @typedef {import("node-pg-migrate/dist/runner.js").RunnerOptionUrl} RunnerOptionUrl
  */
 
-const REQUIRED_ARGS = ["DATABASE_URL"];
+const REQUIRED_ARGS = ["DATABASE_URL", "JWT_SECRET"];
 
 /**
  * @params {Record<string, string>} overrides
@@ -60,6 +60,7 @@ const createConfig = (overrides) => {
 		timestamp:
 			source.TIMESTAMP?.toLowerCase() === "true" || !!source.TIMESTAMP_FORMAT,
 		timestampFormat: source.TIMESTAMP_FORMAT,
+		jwtSecret: source.JWT_SECRET,
 	};
 };
 

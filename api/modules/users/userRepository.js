@@ -19,3 +19,8 @@ export async function registerUser({ firstName, lastName, email, password }) {
 	const { rows } = await db.query(query, values);
 	return rows[0];
 }
+export async function findUserByEmail(email) {
+	const query = 'SELECT * FROM "user" WHERE email = $1';
+	const { rows } = await db.query(query, [email]);
+	return rows[0];
+}

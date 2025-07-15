@@ -82,5 +82,12 @@ export async function deleteBooking(bookingId) {
 	if (!response.ok) {
 		throw new Error("Failed to delete booking");
 	}
-	return response.json();
+	// If backend returns 204 No Content, just return a success message
+	if (response.status === 204) {
+		return { success: true, message: "Booking deleted successfully." };
+	}
+	const text = await response.text();
+	return text
+		? JSON.parse(text)
+		: { success: true, message: "Booking deleted successfully." };
 }

@@ -9,13 +9,15 @@ export async function registerUser({ firstName, lastName, email, password }) {
 	if (!email || typeof email !== "string" || !email.trim()) {
 		throw new Error("Email is required");
 	}
+	const bcrypt = await import("bcryptjs");
+	const hashedPassword = await bcrypt.default.hash(password, 10);
 	const query = `
 	   INSERT INTO "user" (first_name, last_name, email, password)
 	   VALUES ($1, $2, $3, $4)
 	   RETURNING *;
    `;
 
-	const values = [firstName, lastName, email, password];
+	const values = [firstName, lastName, email, hashedPassword];
 	const { rows } = await db.query(query, values);
 	return rows[0];
 }

@@ -39,13 +39,5 @@ export async function handleLogin({ email, password }) {
 		expiresIn: "1h",
 	});
 
-	return {
-		token,
-		user: {
-			id: user.id,
-			email: user.email,
-			firstName: user.first_name,
-			lastName: user.last_name,
-		},
-	};
+	return { token };
 }

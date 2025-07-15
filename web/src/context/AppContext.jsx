@@ -12,8 +12,38 @@ export const AppProvider = ({ children }) => {
 	const [bookings, setBookings] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
+	const [isAuthenticated, setIsAuthenticated] = useState(false);
+	const [currentUser, setCurrentUser] = useState(null);
+
+	// Check for existing session/cookie on mount (use a lightweight endpoint)
+	useEffect(() => {
+		const checkSession = async () => {
+			setLoading(true);
+			try {
+				// Use a lightweight endpoint for session check
+				const res = await fetch("/api/healthz");
+				if (res.ok) {
+					setIsAuthenticated(true);
+				} else {
+					setIsAuthenticated(false);
+				}
+			} catch {
+				setIsAuthenticated(false);
+			} finally {
+				setLoading(false);
+			}
+		};
+		checkSession();
+	}, []);
 
 	useEffect(() => {
+		if (!isAuthenticated) {
+			setUsers([]);
+			setDesks([]);
+			setBookings([]);
+			setCurrentUser(null);
+			return;
+		}
 		const fetchData = async () => {
 			setLoading(true);
 			try {
@@ -22,15 +52,22 @@ export const AppProvider = ({ children }) => {
 					getDesks(),
 					getBookings(),
 				]);
-				setUsers(
-					usersData.map((u) => ({
-						...u,
-						firstName: u.first_name,
-						lastName: u.last_name,
-					})),
-				);
+				const mappedUsers = usersData.map((u) => ({
+					...u,
+					firstName: u.first_name,
+					lastName: u.last_name,
+				}));
+				setUsers(mappedUsers);
 				setDesks(desksData);
 				setBookings(bookingsData);
+				// If currentUser is not set, try to find by email from localStorage (if available)
+				if (!currentUser) {
+					const storedEmail = localStorage.getItem("loggedInEmail");
+					if (storedEmail) {
+						const found = mappedUsers.find((u) => u.email === storedEmail);
+						if (found) setCurrentUser(found);
+					}
+				}
 				setError(null);
 			} catch (err) {
 				setError(err);
@@ -38,19 +75,27 @@ export const AppProvider = ({ children }) => {
 				setLoading(false);
 			}
 		};
-
 		fetchData();
-
 		const intervalId = setInterval(() => {
 			getBookings().then(setBookings).catch(setError);
 		}, 5000);
-
 		return () => clearInterval(intervalId);
-	}, []);
+	}, [isAuthenticated, currentUser]);
 
 	return (
 		<AppContext.Provider
-			value={{ users, desks, bookings, loading, error, setBookings }}
+			value={{
+				users,
+				desks,
+				bookings,
+				loading,
+				error,
+				setBookings,
+				isAuthenticated,
+				setIsAuthenticated,
+				currentUser,
+				setCurrentUser,
+			}}
 		>
 			{children}
 		</AppContext.Provider>

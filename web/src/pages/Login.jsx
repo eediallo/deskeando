@@ -31,7 +31,7 @@ const Login = () => {
 					firstName: found.first_name,
 					lastName: found.last_name,
 				});
-			navigate("/");
+			navigate("/dashboard");
 		} catch (err) {
 			setError(err.message || "Login failed");
 		}

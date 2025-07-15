@@ -3,9 +3,7 @@ import { useState } from "react";
 import BookingModal from "../components/BookingModal";
 import DeskGrid from "../components/DeskGrid";
 import { useAppContext } from "../context/useAppContext";
-
-// API calls temporarily commented out
-// import { createBooking, deleteBooking } from '../services/apiService';
+import { createBooking, deleteBooking } from "../services/apiService";
 
 const Home = () => {
 	const { desks, bookings, users, loading, error, setBookings } =
@@ -13,9 +11,9 @@ const Home = () => {
 	const [selectedDesk, setSelectedDesk] = useState(null);
 	const [selectedBooking, setSelectedBooking] = useState(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
-
-	// Hardcoded current user ID
-	const currentUserId = 1;
+	// Use the logged-in user from context
+	const { currentUser } = useAppContext();
+	const currentUserId = currentUser ? currentUser.id : null;
 
 	const handleDeskClick = (desk, booking) => {
 		setSelectedDesk(desk);
@@ -29,41 +27,42 @@ const Home = () => {
 		setSelectedBooking(null);
 	};
 
-	const handleBook = (deskId) => {
-		const userHasBooking = bookings.some(
-			(booking) => booking.user_id === currentUserId,
-		);
-		if (userHasBooking) {
-			alert("You can only book one desk per day.");
-			handleCloseModal();
-			return;
+	const handleBook = async (deskId) => {
+		try {
+			const bookingData = {
+				userId: currentUserId,
+				deskId,
+			};
+			const newBooking = await createBooking(bookingData);
+			setBookings([...bookings, newBooking]);
+		} catch (err) {
+			alert(err.message || "Failed to book desk");
 		}
-		// Using mock data
-		const newBooking = {
-			booking_id: Date.now(), // Simple unique ID for mock
-			desk_id: deskId,
-			user_id: currentUserId,
-			from_date: new Date().toISOString(),
-			to_date: new Date().toISOString(),
-			user: users.find((u) => u.id === currentUserId),
-			desk: desks.find((d) => d.id === deskId),
-		};
-		setBookings([...bookings, newBooking]);
 		handleCloseModal();
 	};
 
-	const handleCancel = (bookingId) => {
-		// Using mock data
-		setBookings(bookings.filter((b) => b.booking_id !== bookingId));
+	const handleCancel = async (bookingId) => {
+		try {
+			await deleteBooking(bookingId);
+			setBookings(bookings.filter((b) => b.booking_id !== bookingId));
+		} catch (err) {
+			alert(err.message || "Failed to cancel booking");
+		}
 		handleCloseModal();
 	};
 
 	if (loading) return <p>Loading...</p>;
 	if (error) return <p>Error: {error.message}</p>;
+	if (!currentUserId) return <p>Please log in to book a desk.</p>;
 
 	return (
 		<div>
 			<h1>Desk Booking</h1>
+			{currentUser && (
+				<p style={{ marginBottom: "1rem" }}>
+					Logged in as: <strong>{currentUser.email}</strong>
+				</p>
+			)}
 			<DeskGrid
 				desks={desks}
 				bookings={bookings}

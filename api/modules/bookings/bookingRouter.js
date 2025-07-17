@@ -1,5 +1,7 @@
 import { Router } from "express";
 
+import { authenticate } from "../../middlewares/authMiddleware.js";
+
 import {
 	handleCreateBooking,
 	getAllBookings,
@@ -9,11 +11,11 @@ import {
 
 const router = Router();
 
-router.get("/", async (_, res) => {
+router.get("/", authenticate, async (_, res) => {
 	res.send(await getAllBookings());
 });
 
-router.post("/", async (req, res) => {
+router.post("/", authenticate, async (req, res) => {
 	const { userId, deskId } = req.body;
 
 	if (!userId || !deskId) {
@@ -37,7 +39,7 @@ router.post("/", async (req, res) => {
 	}
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", authenticate, async (req, res) => {
 	const bookingId = req.params.id;
 	const userId = req.body?.userId;
 	try {

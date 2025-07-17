@@ -65,7 +65,12 @@
 		"npm": "^10 || ^11"
 	},
 	"dependencies": {
+		"bcryptjs": "^3.0.2",
+		"cookie-parser": "^1.4.7",
+		"cors": "^2.8.5",
 		"dotenv": "^17.0.1",
-		"postman-to-openapi": "^1.7.3"
+		"jsonwebtoken": "^9.0.2",
+		"postman-to-openapi": "^1.7.3",
+		"react-router-dom": "^7.6.3"
 	}
 }

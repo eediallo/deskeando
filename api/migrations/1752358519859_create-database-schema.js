@@ -39,6 +39,15 @@ export async function up(pgm) {
 		last_name: {
 			type: "text",
 		},
+		email: {
+			type: "text",
+			notNull: true,
+			unique: true,
+		},
+		password: {
+			type: "varchar(255)",
+			notNull: true,
+		},
 	});
 
 	// Create booking table
@@ -70,6 +79,11 @@ export async function up(pgm) {
 		},
 	});
 
+	// Add unique constraint: only one booking per desk per date
+	pgm.addConstraint("booking", "unique_desk_date", {
+		unique: ["desk_id", "from_date"],
+	});
+
 	// Insert initial data for desks
 	pgm.sql(`
 		INSERT INTO "desk" (id, name) VALUES
@@ -82,20 +96,26 @@ export async function up(pgm) {
 
 	// insert rest of initial data for desks
 	pgm.sql(`
-        INSERT INTO "desk" (name)
-        VALUES
-        ${Array.from({ length: 45 }, (_, i) => `('Desk ${i + 6}')`).join(",\n")}
-    ;
-    `);
+		INSERT INTO "desk" (name)
+		VALUES
+		${Array.from({ length: 45 }, (_, i) => `('Desk ${i + 6}')`).join(",\n")}
+	;
+	`);
 
-	// Insert initial data for users
-	pgm.sql(`
-		INSERT INTO "user" (id, first_name, last_name) VALUES
-		('26136694-7c90-41c3-9787-b7f0bd776a23', 'Alice', 'Smith'),
-		('c6dbfcba-a714-4f26-a658-f6292ca7586e','Bob', 'Johnson'),
-		('fbd8d766-73b9-4cd0-b11e-8fb507ca0d53','Charlie', 'Lee'),
-		('82f7e975-c803-4fb8-be96-4f7c9bfa6a0c','Diana', 'Brown'),
-		('35abf422-88d4-4de4-aa02-7294e8ac796e','Ethan', 'Wilson');
+	// Insert initial data for users with bcrypt-hashed passwords (ESM compatible)
+	const bcrypt = await import("bcryptjs");
+	const hash = (pw) => bcrypt.default.hashSync(pw, 10);
+	const aliceHash = hash("sosecret");
+	const bobHash = hash("sosecret");
+	const charlieHash = hash("sosecret");
+	const dianaHash = hash("sosecret");
+	const ethanHash = hash("sosecret");
+	pgm.sql(`INSERT INTO "user" (id, first_name, last_name, email, password) VALUES
+		('26136694-7c90-41c3-9787-b7f0bd776a23', 'Alice', 'Smith', 'alice@gmail.com', '${aliceHash}'),
+		('c6dbfcba-a714-4f26-a658-f6292ca7586e','Bob', 'Johnson', 'bob@gmail.cl', '${bobHash}'),
+		('fbd8d766-73b9-4cd0-b11e-8fb507ca0d53','Charlie', 'Lee', 'charlie@gmail.com', '${charlieHash}'),
+		('82f7e975-c803-4fb8-be96-4f7c9bfa6a0c','Diana', 'Brown', 'diana@gmail.com', '${dianaHash}'),
+		('35abf422-88d4-4de4-aa02-7294e8ac796e','Ethan', 'Wilson', 'ethan@gmail.com', '${ethanHash}');
 	`);
 
 	// Insert initial data for bookings

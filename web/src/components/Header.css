@@ -6,3 +6,8 @@
 .app-header nav a {
 	margin-right: 1rem;
 }
+
+.logo {
+	color: black;
+	font-size: 20px;
+}

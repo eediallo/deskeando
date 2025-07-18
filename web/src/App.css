@@ -1,6 +1,31 @@
 #root {
-	max-width: 1280px;
+	max-width: 100%;
 	margin: 0 auto;
 	padding: 2rem;
-	text-align: center;
+}
+
+.hero {
+	display: flex;
+	gap: 100px;
+	width: 900px;
+	margin: 0 auto;
+}
+
+.hero-image {
+	width: 500px;
+	height: auto;
+}
+
+.book-now-btn {
+	display: inline-block;
+	background-color: #646cff;
+	color: #ffff;
+	transition: background-color 0.3s ease;
+	padding: 10px;
+	margin-top: 10px;
+}
+
+.book-now-btn:hover {
+	background-color: #4b54c6;
+	color: #ffff;
 }

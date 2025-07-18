@@ -1,7 +1,9 @@
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
+import Hero from "./assets/hero.jpg";
 import Header from "./components/Header";
 import { useAppContext } from "./context/useAppContext";
 import "./App.css";
@@ -21,9 +23,17 @@ function App() {
 				<Route
 					path="/"
 					element={
-						<div style={{ textAlign: "center", marginTop: "2rem" }}>
-							<h1>Welcome to Have A Look</h1>
-							<p>Please log in or sign up to book a desk.</p>
+						<div className="hero">
+							<div>
+								<h1>Book a Desk</h1>
+								<p>Reserve your workspace in advance.</p>
+								<Link to="/register" className="book-now-btn">
+									Book Now
+								</Link>
+							</div>
+							<div>
+								<img className="hero-image" src={Hero} alt="desk booking" />
+							</div>
 						</div>
 					}
 				/>

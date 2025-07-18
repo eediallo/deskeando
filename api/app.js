@@ -4,6 +4,7 @@ import express from "express";
 
 import apiRouter from "./api.js";
 import { testConnection } from "./db.js";
+import { errorHandlerMiddleware } from "./middlewares/errorHandler.js";
 import config from "./utils/config.js";
 import {
 	clientRouter,
@@ -37,6 +38,8 @@ app.get("/healthz", async (_, res) => {
 app.use(API_ROOT, apiRouter);
 
 app.use(clientRouter(API_ROOT));
+
+app.use(errorHandlerMiddleware);
 
 app.use(logErrors());
 

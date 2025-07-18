@@ -1,6 +1,8 @@
-import bcrypt from "bcrypt";
+import bcryptjs from "bcryptjs";
+import { StatusCodes } from "http-status-codes";
 import jwt from "jsonwebtoken";
 
+import { ApiError } from "../../errors/ApiError.js";
 import config from "../../utils/config.js";
 
 import { registerUser, getAll, findUserByEmail } from "./userRepository.js";
@@ -22,17 +24,17 @@ export async function handleLogin({ email, password }) {
 	const user = await findUserByEmail(email);
 
 	if (!user) {
-		throw new Error("Invalid credentials");
+		throw new ApiError("Invalid credentials", StatusCodes.UNAUTHORIZED);
 	}
 
-	const passwordMatch = await bcrypt.compare(password, user.password);
+	const passwordMatch = await bcryptjs.compare(password, user.password);
 
 	if (!passwordMatch) {
-		throw new Error("Invalid credentials");
+		throw new ApiError("Invalid credentials", StatusCodes.UNAUTHORIZED);
 	}
 
 	if (!config.jwtSecret) {
-		throw new Error("Missing JWT_SECRET");
+		throw new ApiError("Missing JWT_SECRET", StatusCodes.INTERNAL_SERVER_ERROR);
 	}
 
 	const token = jwt.sign({ id: user.id, email: user.email }, config.jwtSecret, {

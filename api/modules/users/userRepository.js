@@ -1,4 +1,4 @@
-import bcrypt from "bcryptjs";
+import bcryptjs from "bcryptjs";
 
 import db from "../../db.js";
 
@@ -14,7 +14,7 @@ export async function registerUser({ firstName, lastName, email, password }) {
 		throw new Error("Email already in use.");
 	}
 
-	const hashedPassword = await bcrypt.hash(password, 10);
+	const hashedPassword = await bcryptjs.hash(password, 10);
 
 	const query = `
 	   INSERT INTO "user" (first_name, last_name, email, password)

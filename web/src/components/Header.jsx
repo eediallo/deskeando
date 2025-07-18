@@ -7,7 +7,7 @@ const Header = () => {
 	const { isAuthenticated } = useAppContext();
 	return (
 		<header className="app-header">
-			<div className="logo">HaveALook</div>
+			<div className="logo">Logo for Desks Booking System</div>
 			<nav>
 				{!isAuthenticated && (
 					<>

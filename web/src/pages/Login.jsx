@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../context/useAppContext";
 import { loginUser, getUsers } from "../services/apiService";
 
+import "./Login.css";
+
 const Login = () => {
 	const [form, setForm] = useState({ email: "", password: "" });
 	const [error, setError] = useState(null);
@@ -38,7 +40,7 @@ const Login = () => {
 	};
 
 	return (
-		<div>
+		<div className="login-container">
 			<h2>Login</h2>
 			<form onSubmit={handleSubmit}>
 				<input
@@ -59,7 +61,7 @@ const Login = () => {
 				/>
 				<button type="submit">Login</button>
 			</form>
-			{error && <p style={{ color: "red" }}>{error}</p>}
+			{error && <p>{error}</p>}
 		</div>
 	);
 };

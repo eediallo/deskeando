@@ -1,13 +1,62 @@
 .app-header {
-	padding: 1rem;
-	background-color: #f0f0f0;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 60px;
+	background-color: #1a1a1a;
+	color: white;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+	z-index: 1000;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 0rem;
 }
 
-.app-header nav a {
-	margin-right: 1rem;
+nav {
+	display: flex;
+	gap: 1rem;
+	color: white;
 }
 
-.logo {
-	color: black;
-	font-size: 20px;
+/* .logo {
+	font-size: 1 rem;
+	font-weight: 700;
+	letter-spacing: 0.05em;
+	cursor: default;
+	user-select: none;
+} */
+
+nav a {
+	color: #e0e0ff;
+	text-decoration: none;
+	font-weight: 600;
+	padding: 0.25rem 0.75rem;
+	border-radius: 6px;
+	transition:
+		background-color 0.2s ease,
+		color 0.2s ease;
+	font-size: 0.9rem;
+}
+
+nav a:hover {
+	background-color: rgba(21, 20, 20, 0.2);
+	color: #8686f4;
+}
+
+@media (max-width: 600px) {
+	.app-header {
+		flex-direction: column;
+		align-items: flex-start;
+		padding: 0.5rem 1rem;
+		height: auto;
+	}
+
+	nav {
+		width: 100%;
+		justify-content: flex-start;
+		gap: 0.75rem;
+		margin-top: 0.25rem;
+	}
 }

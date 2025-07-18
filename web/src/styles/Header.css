@@ -4,53 +4,58 @@
 	left: 0;
 	width: 100%;
 	background-color: #ffff;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	padding: 8px;
 }
 
 nav {
 	display: flex;
 	gap: 1rem;
-	margin-right: 10px;
+	margin-right: 20px;
+}
+
+.logo {
+	width: 150px;
+	height: auto;
 }
 
 nav a {
-	color: black;
 	text-decoration: none;
 	border-radius: 6px;
 	font-size: 0.9rem;
+	padding: 10px;
 }
 
 .register-btn {
 	background-color: red;
 	color: #ffff;
-	padding: 8px;
+	transition: background-color 0.3s ease;
+}
+
+.register-btn:hover {
+	background-color: #cc0000;
+	color: #ffff;
 }
 
 .login-btn {
-	background-color: green;
+	background-color: #646cff;
 	color: #ffff;
-	padding: 8px;
+	transition: background-color 0.3s ease;
 }
 
-nav a:hover {
-	/* background-color: rgba(21, 20, 20, 0.2); */
+.login-btn:hover {
+	background-color: #4b54c6;
+	color: #ffff;
 }
 
 @media (max-width: 600px) {
 	.app-header {
 		flex-direction: column;
-		align-items: flex-start;
+		align-items: center;
+		justify-content: center;
 		padding: 0.5rem 1rem;
 		height: auto;
-	}
-
-	nav {
-		width: 100%;
-		justify-content: flex-start;
-		gap: 0.75rem;
-		margin-top: 0.25rem;
 	}
 }

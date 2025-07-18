@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 import { useAppContext } from "../context/useAppContext";
 import { loginUser, getUsers } from "../services/apiService";
@@ -62,6 +62,9 @@ const Login = () => {
 				<button type="submit">Login</button>
 			</form>
 			{error && <p>{error}</p>}
+			<p style={{ marginTop: "1rem" }}>
+				Don&#39;t have an account? <Link to="/register">Register here</Link>
+			</p>
 		</div>
 	);
 };

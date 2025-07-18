@@ -27,7 +27,7 @@ function App() {
 							<div>
 								<h1>Book a Desk</h1>
 								<p>Reserve your workspace in advance.</p>
-								<Link to="/register" className="book-now-btn">
+								<Link to="/login" className="book-now-btn">
 									Book Now
 								</Link>
 							</div>

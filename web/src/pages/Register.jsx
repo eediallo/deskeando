@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { registerUser } from "../services/apiService";
 
+import "./Register.css";
 const Register = () => {
 	const [form, setForm] = useState({
 		firstName: "",
@@ -29,7 +30,7 @@ const Register = () => {
 	};
 
 	return (
-		<div>
+		<div className="register-container">
 			<h2>Register</h2>
 			<form onSubmit={handleSubmit}>
 				<input
@@ -64,7 +65,7 @@ const Register = () => {
 				/>
 				<button type="submit">Register</button>
 			</form>
-			{error && <p style={{ color: "red" }}>{error}</p>}
+			{error && <p>{error}</p>}
 		</div>
 	);
 };

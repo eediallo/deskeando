@@ -1,18 +1,27 @@
 import { Link } from "react-router-dom";
 
+import Logo from "../assets/logo.png";
 import { useAppContext } from "../context/useAppContext";
-import "./Header.css";
+import "../styles/Header.css";
 
 const Header = () => {
 	const { isAuthenticated } = useAppContext();
 	return (
 		<header className="app-header">
-			<div className="logo">Logo for Desks Booking System</div>
+			<div>
+				<a href="/">
+					<img className="logo" src={Logo} alt="logo" />
+				</a>
+			</div>
 			<nav>
 				{!isAuthenticated && (
 					<>
-						<Link to="/login">Login</Link>
-						<Link to="/register">Sign Up</Link>
+						<Link className="login-btn" to="/login">
+							Login
+						</Link>
+						<Link className="register-btn" to="/register">
+							Sign Up
+						</Link>
 					</>
 				)}
 				{isAuthenticated && (

@@ -1,0 +1,61 @@
+.app-header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	background-color: #ffff;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 8px;
+}
+
+nav {
+	display: flex;
+	gap: 1rem;
+	margin-right: 20px;
+}
+
+.logo {
+	width: 150px;
+	height: auto;
+}
+
+nav a {
+	text-decoration: none;
+	border-radius: 6px;
+	font-size: 0.9rem;
+	padding: 10px;
+}
+
+.register-btn {
+	background-color: red;
+	color: #ffff;
+	transition: background-color 0.3s ease;
+}
+
+.register-btn:hover {
+	background-color: #cc0000;
+	color: #ffff;
+}
+
+.login-btn {
+	background-color: #646cff;
+	color: #ffff;
+	transition: background-color 0.3s ease;
+}
+
+.login-btn:hover {
+	background-color: #4b54c6;
+	color: #ffff;
+}
+
+@media (max-width: 600px) {
+	.app-header {
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 0.5rem 1rem;
+		height: auto;
+	}
+}

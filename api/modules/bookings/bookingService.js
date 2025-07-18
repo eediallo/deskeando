@@ -1,3 +1,7 @@
+import { StatusCodes } from "http-status-codes";
+
+import { ApiError } from "../../errors/ApiError.js";
+
 import {
 	getAll,
 	getOneBookingById,
@@ -13,23 +17,36 @@ export async function getAllBookings() {
 
 export async function handleCreateBooking({ userId, deskId, date }) {
 	if (await isUserBookedOnDate(userId, date)) {
-		const error = new Error("User already has a booking for this date.");
-		error.status = 409;
-		throw error;
+		throw new ApiError(
+			"User already has a booking for this date.",
+			StatusCodes.CONFLICT,
+		);
 	}
 
 	if (await isDeskBookedOnDate(deskId, date)) {
-		const error = new Error("Desk is already booked for this date.");
-		error.status = 409;
-		throw error;
+		throw new ApiError(
+			"Desk is already booked for this date.",
+			StatusCodes.CONFLICT,
+		);
 	}
 	return await createBooking({ userId, deskId, date: date });
 }
 
 export async function getBookingById(id) {
-	return await getOneBookingById(id);
+	const booking = await getOneBookingById(id);
+	if (!booking) {
+		throw new ApiError("Booking not found", StatusCodes.NOT_FOUND);
+	}
+	return booking;
 }
 
 export async function deleteBookingById(id) {
-	return await deleteOneBookingById(id);
+	const deleted = await deleteOneBookingById(id);
+	if (!deleted) {
+		throw new ApiError(
+			"Booking not found or already deleted",
+			StatusCodes.NOT_FOUND,
+		);
+	}
+	return deleted;
 }

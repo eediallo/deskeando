@@ -15,6 +15,13 @@ const Home = () => {
 	const { currentUser } = useAppContext();
 	const currentUserId = currentUser ? currentUser.id : null;
 
+	// Filter bookings to only today's date
+	const today = new Date().toISOString().split("T")[0];
+	const todaysBookings = bookings.filter((b) => {
+		const bookingDate = new Date(b.from_date).toISOString().split("T")[0];
+		return bookingDate === today;
+	});
+
 	const handleDeskClick = (desk, booking) => {
 		setSelectedDesk(desk);
 		setSelectedBooking(booking);
@@ -65,7 +72,7 @@ const Home = () => {
 			)}
 			<DeskGrid
 				desks={desks}
-				bookings={bookings}
+				bookings={todaysBookings}
 				onDeskClick={handleDeskClick}
 				currentUserId={currentUserId}
 			/>

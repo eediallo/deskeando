@@ -29,3 +29,13 @@
 	background-color: #4b54c6;
 	color: #ffff;
 }
+
+@media (max-width: 600px) {
+	.hero-description {
+		text-align: center;
+		margin-top: 10px;
+	}
+	.hero-image {
+		display: none;
+	}
+}

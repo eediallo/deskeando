@@ -24,7 +24,7 @@ function App() {
 					path="/"
 					element={
 						<div className="hero">
-							<div>
+							<div className="hero-description">
 								<h1>Book a Desk</h1>
 								<p>Reserve your workspace in advance.</p>
 								<Link to="/login" className="book-now-btn">

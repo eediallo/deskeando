@@ -2,9 +2,8 @@ import bcryptjs from "bcryptjs";
 import { StatusCodes } from "http-status-codes";
 
 import db from "../../db.js";
-import { sql } from "../../utils/database.js";
 import { ApiError } from "../../errors/ApiError.js";
-
+import { sql } from "../../utils/database.js";
 
 export async function getAll() {
 	const { rows } = await db.query(

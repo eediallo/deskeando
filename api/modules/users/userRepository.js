@@ -14,6 +14,7 @@ export async function getAll() {
 			last_name, 
 			email 
 		FROM "user";`,
+		'SELECT id, first_name, last_name, email FROM "user";',
 	);
 	return rows;
 }

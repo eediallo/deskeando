@@ -1,12 +1,14 @@
 import { useState } from "react";
 
+import UserMenu from "../components/UserMenu";
 import { useAppContext } from "../context/useAppContext";
 
 import CalendarView from "./CalendarView";
 import Home from "./Home";
+import "./Dashboard.css";
 
 const Dashboard = () => {
-	const { setIsAuthenticated } = useAppContext();
+	const { setIsAuthenticated, currentUser } = useAppContext();
 	const [tab, setTab] = useState("desks");
 
 	const handleLogout = () => {
@@ -18,9 +20,11 @@ const Dashboard = () => {
 	return (
 		<div className="dashboard">
 			<aside className="dashboard-sidebar">
-				<button onClick={() => setTab("desks")}>Desks View</button>
-				<button onClick={() => setTab("calendar")}>Calendar View</button>
-				<button onClick={handleLogout}>Logout</button>
+				<div>
+					<button onClick={() => setTab("desks")}>Desks View</button>
+					<button onClick={() => setTab("calendar")}>Calendar View</button>
+				</div>
+				<UserMenu user={currentUser} logout={handleLogout} />
 			</aside>
 			<main className="dashboard-main">
 				{tab === "desks" && <Home />}

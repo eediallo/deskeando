@@ -1,7 +1,10 @@
 import bcryptjs from "bcryptjs";
+import { StatusCodes } from "http-status-codes";
 
 import db from "../../db.js";
 import { sql } from "../../utils/database.js";
+import { ApiError } from "../../errors/ApiError.js";
+
 
 export async function getAll() {
 	const { rows } = await db.query(
@@ -27,7 +30,7 @@ export async function registerUser({ firstName, lastName, email, password }) {
 		[email],
 	);
 	if (checkResult.rows.length > 0) {
-		throw new Error("Email already in use.");
+		throw new ApiError("Email already in use.", StatusCodes.CONFLICT);
 	}
 
 	const hashedPassword = await bcryptjs.hash(password, 10);

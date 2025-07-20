@@ -69,11 +69,11 @@ const Home = () => {
 	return (
 		<div>
 			<h1>Desk Booking</h1>
-			{currentUser && (
+			{/* {currentUser && (
 				<p style={{ marginBottom: "1rem" }}>
 					Logged in as: <strong>{formatUsername(currentUser)}</strong>
 				</p>
-			)}
+			)} */}
 			<DeskGrid
 				desks={desks}
 				bookings={todaysBookings}

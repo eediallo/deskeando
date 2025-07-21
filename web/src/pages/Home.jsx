@@ -5,10 +5,6 @@ import DeskGrid from "../components/DeskGrid";
 import { useAppContext } from "../context/useAppContext";
 import { createBooking, deleteBooking } from "../services/apiService";
 
-function formatUsername(user) {
-	return `${user.first_name} ${user.last_name[0]}.`;
-}
-
 const Home = () => {
 	const { desks, bookings, users, loading, error, setBookings } =
 		useAppContext();

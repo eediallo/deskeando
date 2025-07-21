@@ -1,7 +1,13 @@
 import PropTypes from "prop-types";
 import { createContext, useState, useEffect } from "react";
 
-import { getUsers, getDesks, getBookings } from "../services/apiService";
+import {
+	getUsers,
+	getDesks,
+	getBookings,
+	getCurrentUser,
+	logoutUser,
+} from "../services/apiService";
 
 const AppContext = createContext();
 export { AppContext };
@@ -15,26 +21,36 @@ export const AppProvider = ({ children }) => {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const [currentUser, setCurrentUser] = useState(null);
 
-	// Check for existing session/cookie on mount (use a lightweight endpoint)
+	// Restore session and current user on mount
 	useEffect(() => {
-		const checkSession = async () => {
+		const restoreSession = async () => {
 			setLoading(true);
 			try {
-				// Use a lightweight endpoint for session check
-				const res = await fetch("/api/healthz");
-				if (res.ok) {
-					setIsAuthenticated(true);
-				} else {
-					setIsAuthenticated(false);
-				}
+				const user = await getCurrentUser();
+				setCurrentUser(user);
+				setIsAuthenticated(true);
 			} catch {
+				setCurrentUser(null);
 				setIsAuthenticated(false);
 			} finally {
 				setLoading(false);
 			}
 		};
-		checkSession();
+		restoreSession();
 	}, []);
+	// Logout function: clears state and calls backend
+	const logout = async () => {
+		try {
+			await logoutUser();
+		} catch {
+			// Ignore errors, always clear state
+		}
+		setIsAuthenticated(false);
+		setCurrentUser(null);
+		setUsers([]);
+		setDesks([]);
+		setBookings([]);
+	};
 
 	useEffect(() => {
 		if (!isAuthenticated) {
@@ -60,14 +76,6 @@ export const AppProvider = ({ children }) => {
 				setUsers(mappedUsers);
 				setDesks(desksData);
 				setBookings(bookingsData);
-				// If currentUser is not set, try to find by email from localStorage (if available)
-				if (!currentUser) {
-					const storedEmail = localStorage.getItem("loggedInEmail");
-					if (storedEmail) {
-						const found = mappedUsers.find((u) => u.email === storedEmail);
-						if (found) setCurrentUser(found);
-					}
-				}
 				setError(null);
 			} catch (err) {
 				setError(err);
@@ -95,6 +103,7 @@ export const AppProvider = ({ children }) => {
 				setIsAuthenticated,
 				currentUser,
 				setCurrentUser,
+				logout,
 			}}
 		>
 			{children}

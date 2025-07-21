@@ -44,7 +44,7 @@ export async function getCurrentUser() {
 	if (!response.ok) {
 		throw new Error("Not authenticated");
 	}
-	return response.json();
+	return await response.json();
 }
 
 export async function getDesks() {
@@ -98,4 +98,15 @@ export async function deleteBooking(bookingId) {
 	return text
 		? JSON.parse(text)
 		: { success: true, message: "Booking deleted successfully." };
+}
+
+export async function logoutUser() {
+	const response = await fetch(`${API_BASE_URL}/auth/logout`, {
+		method: "POST",
+		credentials: "include",
+	});
+	if (!response.ok) {
+		throw new Error("Logout failed");
+	}
+	return response.json();
 }

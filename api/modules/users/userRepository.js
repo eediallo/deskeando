@@ -3,12 +3,10 @@ import { StatusCodes } from "http-status-codes";
 
 import db from "../../db.js";
 import { ApiError } from "../../errors/ApiError.js";
-import { sql } from "../../utils/database.js";
 
 export async function getAll() {
 	const { rows } = await db.query(
-		sql`
-		SELECT 
+		`SELECT 
 			id, 
 			first_name, 
 			last_name, 
@@ -20,8 +18,7 @@ export async function getAll() {
 
 export async function registerUser({ firstName, lastName, email, password }) {
 	const checkResult = await db.query(
-		sql`
-		SELECT 
+		`SELECT 
 			id
 		FROM "user" 
 		WHERE email = $1
@@ -36,7 +33,7 @@ export async function registerUser({ firstName, lastName, email, password }) {
 
 	const values = [firstName, lastName, email, hashedPassword];
 	const { rows } = await db.query(
-		sql`
+		`
 	   INSERT 
 	   	INTO "user" (first_name, last_name, email, password)
 	   VALUES ($1, $2, $3, $4)
@@ -49,7 +46,7 @@ export async function registerUser({ firstName, lastName, email, password }) {
 
 export async function findUserByEmail(email) {
 	const { rows } = await db.query(
-		sql`
+		`
 		SELECT * FROM "user"
 			WHERE email = $1
 	`,

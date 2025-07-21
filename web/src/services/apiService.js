@@ -59,6 +59,16 @@ export async function getBookings() {
 	return response.json();
 }
 
+export async function getMyBookings() {
+	const response = await fetch(`${API_BASE_URL}/bookings/my`, {
+		credentials: "include",
+	});
+	if (!response.ok) {
+		throw new Error("Failed to fetch your bookings");
+	}
+	return response.json();
+}
+
 export async function createBooking(bookingData) {
 	const response = await fetch(`${API_BASE_URL}/bookings`, {
 		method: "POST",

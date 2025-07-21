@@ -2,12 +2,13 @@ import { useState } from "react";
 
 import BookingModal from "../components/BookingModal";
 import DeskGrid from "../components/DeskGrid";
+import MyBookings from "../components/MyBookings";
 import { useAppContext } from "../context/useAppContext";
 import { createBooking, deleteBooking } from "../services/apiService";
 
-function formatUsername(user) {
+/* function formatUsername(user) {
 	return `${user.first_name} ${user.last_name[0]}.`;
-}
+} */
 
 const Home = () => {
 	const { desks, bookings, users, loading, error, setBookings } =
@@ -40,6 +41,7 @@ const Home = () => {
 
 	const handleBook = async (deskId) => {
 		try {
+			console.log("Booking attempt:", { userId: currentUserId, deskId });
 			const bookingData = {
 				userId: currentUserId,
 				deskId,
@@ -69,6 +71,7 @@ const Home = () => {
 	return (
 		<div>
 			<h1>Desk Booking</h1>
+			<MyBookings />
 			{/* {currentUser && (
 				<p style={{ marginBottom: "1rem" }}>
 					Logged in as: <strong>{formatUsername(currentUser)}</strong>

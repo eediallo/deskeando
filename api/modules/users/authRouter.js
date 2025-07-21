@@ -68,4 +68,15 @@ authRouter.post("/login", async (req, res) => {
 		.json({ token });
 });
 
+// Logout endpoint: clears the auth cookie
+authRouter.post("/logout", (req, res) => {
+	res.clearCookie("token", {
+		httpOnly: true,
+		sameSite: "Strict",
+		secure: config.production,
+		path: "/",
+	});
+	res.status(200).json({ message: "Logged out" });
+});
+
 export default authRouter;

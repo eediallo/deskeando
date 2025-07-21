@@ -37,9 +37,18 @@ export async function handleLogin({ email, password }) {
 		throw new ApiError("Missing JWT_SECRET", StatusCodes.INTERNAL_SERVER_ERROR);
 	}
 
-	const token = jwt.sign({ id: user.id, email: user.email }, config.jwtSecret, {
-		expiresIn: "1h",
-	});
+	const token = jwt.sign(
+		{
+			id: user.id,
+			email: user.email,
+			firstName: user.first_name,
+			lastName: user.last_name,
+		},
+		config.jwtSecret,
+		{
+			expiresIn: "1h",
+		},
+	);
 
 	return { token };
 }

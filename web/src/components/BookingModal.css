@@ -16,3 +16,19 @@
 	border-radius: 5px;
 	color: black;
 }
+
+.modal-content input[type="date"] {
+	width: 80%;
+	padding: 10px;
+	margin-top: 5px;
+	margin-bottom: 15px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	font-size: 1rem;
+	box-sizing: border-box;
+}
+.modal-content label {
+	display: block;
+	margin-bottom: 6px;
+	font-weight: 500;
+}

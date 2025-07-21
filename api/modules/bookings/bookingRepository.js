@@ -1,9 +1,9 @@
 import db from "../../db.js";
-import { sql } from "../../utils/database.js";
+// import { sql } from "../../utils/database.js";
 
 export async function getAll() {
 	const { rows } = await db.query(
-		sql`
+		`
 			SELECT 
 				b.id AS booking_id, 
 				b.desk_id, b.user_id, 
@@ -21,7 +21,7 @@ export async function getAll() {
 
 export async function getBookingsForDate(date) {
 	const { rows } = await db.query(
-		sql`
+		`
 			SELECT
 				b.id AS booking_id,
 				b.desk_id,
@@ -43,7 +43,7 @@ export async function getBookingsForDate(date) {
 
 export async function isDeskBookedOnDate(deskId, date) {
 	const { rows } = await db.query(
-		sql`
+		`
 			SELECT *
 				FROM booking
 			WHERE desk_id = $1
@@ -57,19 +57,20 @@ export async function isDeskBookedOnDate(deskId, date) {
 
 export async function isUserBookedOnDate(userId, date) {
 	const { rows } = await db.query(
-		sql`
+		`
 			SELECT 1
 				FROM booking
 			WHERE user_id = $1
 				AND from_date = $2 LIMIT 1;
-		`[(userId, date)],
+		`,
+		[userId, date],
 	);
 	return rows.length > 0;
 }
 
 export async function getOneBookingById(id) {
 	const { rows } = await db.query(
-		sql`
+		`
 			SELECT
 				b.id AS booking_id,
 				b.desk_id,
@@ -83,30 +84,31 @@ export async function getOneBookingById(id) {
 			JOIN "user" u ON b.user_id = u.id
 			JOIN desk d ON b.desk_id = d.id
 				WHERE b.id = $1;
-		`[id],
+		`,
+		[id],
 	);
 	return rows[0] || null;
 }
 
 export async function deleteOneBookingById(id) {
 	const { rows } = await db.query(
-		sql`
-			DELETE FROM booking
+		`	DELETE FROM booking
 				WHERE id = $1
 			RETURNING *;
-		`[id],
+		`,
+		[id],
 	);
 	return rows[0] || null;
 }
 
 export async function createBooking({ userId, deskId, date }) {
-	const now = new Date();
-	now.setUTCHours(19, 0, 0, 0);
-	const toDate = now.toISOString();
+	const till = new Date(date);
+	till.setUTCHours(19, 0, 0, 0);
+	const toDate = till.toISOString();
 
 	const values = [userId, deskId, date, toDate];
 	const { rows } = await db.query(
-		sql`
+		`
 		INSERT INTO booking (user_id, desk_id, from_date, to_date)
 			VALUES ($1, $2, $3, $4)
 		RETURNING *;

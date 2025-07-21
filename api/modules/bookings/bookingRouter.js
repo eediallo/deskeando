@@ -19,20 +19,19 @@ router.get("/", authenticate, async (_, res) => {
 });
 
 router.post("/", authenticate, async (req, res) => {
-	const { userId, deskId } = req.body;
-
+	const { userId, deskId, bookingDate } = req.body;
 	if (!userId || !deskId) {
 		throw new ApiError("Missing userId or deskId", StatusCodes.BAD_REQUEST);
 	}
 
-	const now = new Date();
-	now.setUTCHours(13, 0, 0, 0);
-	const bookingDate = now.toISOString();
+	const bookingDateObj = new Date(bookingDate);
+	bookingDateObj.setUTCHours(13, 0, 0, 0);
 
+	const bookingDateISO = bookingDateObj.toISOString();
 	const booking = await handleCreateBooking({
 		userId: String(userId),
 		deskId: String(deskId),
-		date: bookingDate,
+		date: bookingDateISO,
 	});
 	res.status(201).json(booking);
 });

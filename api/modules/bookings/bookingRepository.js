@@ -58,11 +58,12 @@ export async function isDeskBookedOnDate(deskId, date) {
 export async function isUserBookedOnDate(userId, date) {
 	const { rows } = await db.query(
 		sql`
-			SELECT 1
-				FROM booking
-			WHERE user_id = $1
-				AND from_date = $2 LIMIT 1;
-		`[(userId, date)],
+	  SELECT 1
+		FROM booking
+	  WHERE user_id = $1
+		AND from_date = $2 LIMIT 1;
+	`,
+		[userId, date],
 	);
 	return rows.length > 0;
 }
@@ -83,7 +84,8 @@ export async function getOneBookingById(id) {
 			JOIN "user" u ON b.user_id = u.id
 			JOIN desk d ON b.desk_id = d.id
 				WHERE b.id = $1;
-		`[id],
+		`,
+		[id],
 	);
 	return rows[0] || null;
 }
@@ -94,7 +96,8 @@ export async function deleteOneBookingById(id) {
 			DELETE FROM booking
 				WHERE id = $1
 			RETURNING *;
-		`[id],
+		`,
+		[id],
 	);
 	return rows[0] || null;
 }

@@ -4,11 +4,14 @@ import messageRouter from "./messages/messageRouter.js";
 import bookingRouter from "./modules/bookings/bookingRouter.js";
 import deskRouter from "./modules/desks/deskRouter.js";
 import authRouter from "./modules/users/authRouter.js";
+import meRouter from "./modules/users/meRouter.js";
 import userRouter from "./modules/users/userRouter.js";
 
 const api = Router();
 
 api.use("/message", messageRouter);
+
+api.use("/v1/me", meRouter);
 
 api.use("/v1/users", userRouter);
 

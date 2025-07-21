@@ -9,6 +9,7 @@ import {
 	getAllBookings,
 	deleteBookingById,
 	getBookingById,
+	getBookingsForUser,
 } from "./bookingService.js";
 
 const router = Router();
@@ -52,6 +53,12 @@ router.delete("/:id", authenticate, async (req, res) => {
 
 	await deleteBookingById(bookingId);
 	res.status(204).send();
+});
+
+router.get("/my", authenticate, async (req, res) => {
+	const userId = req.user.id;
+	const bookings = await getBookingsForUser(userId);
+	res.json(bookings);
 });
 
 export default router;

@@ -9,6 +9,7 @@ import {
 	isUserBookedOnDate,
 	isDeskBookedOnDate,
 	createBooking,
+	getBookingsByUserId,
 } from "./bookingRepository.js";
 
 export async function getAllBookings() {
@@ -49,4 +50,8 @@ export async function deleteBookingById(id) {
 		);
 	}
 	return deleted;
+}
+
+export async function getBookingsForUser(userId) {
+	return await getBookingsByUserId(userId);
 }

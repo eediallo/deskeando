@@ -70,30 +70,37 @@ const Home = () => {
 
 	return (
 		<div>
+			{/* Move the page title above the flex container for alignment */}
 			<h1>Desk Booking</h1>
-			<MyBookings />
-			{/* {currentUser && (
-				<p style={{ marginBottom: "1rem" }}>
-					Logged in as: <strong>{formatUsername(currentUser)}</strong>
-				</p>
-			)} */}
-			<DeskGrid
-				desks={desks}
-				bookings={todaysBookings}
-				onDeskClick={handleDeskClick}
-				currentUserId={currentUserId}
-			/>
-			{isModalOpen && (
-				<BookingModal
-					desk={selectedDesk}
-					booking={selectedBooking}
-					onClose={handleCloseModal}
-					onBook={handleBook}
-					onCancel={handleCancel}
-					currentUserId={currentUserId}
-					users={users}
-				/>
-			)}
+			<div style={{ display: "flex", alignItems: "flex-start", gap: "2rem" }}>
+				<div style={{ flex: 1 }}>
+					{/* {currentUser && (
+						<p style={{ marginBottom: "1rem" }}>
+							Logged in as: <strong>{formatUsername(currentUser)}</strong>
+						</p>
+					)} */}
+					<DeskGrid
+						desks={desks}
+						bookings={todaysBookings}
+						onDeskClick={handleDeskClick}
+						currentUserId={currentUserId}
+					/>
+					{isModalOpen && (
+						<BookingModal
+							desk={selectedDesk}
+							booking={selectedBooking}
+							onClose={handleCloseModal}
+							onBook={handleBook}
+							onCancel={handleCancel}
+							currentUserId={currentUserId}
+							users={users}
+						/>
+					)}
+				</div>
+				<div style={{ width: "350px", minWidth: "300px" }}>
+					<MyBookings />
+				</div>
+			</div>
 		</div>
 	);
 };

@@ -1,43 +1,64 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-import { getMyBookings } from "../services/apiService";
+import { useAppContext } from "../context/useAppContext";
+import "./MyBookings.css";
 
 const MyBookings = () => {
-	const [bookings, setBookings] = useState([]);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState(null);
+	const { bookings, currentUser, loading, error } = useAppContext();
+	const [tab, setTab] = useState("upcoming");
 
-	useEffect(() => {
-		const fetchBookings = async () => {
-			setLoading(true);
-			try {
-				const data = await getMyBookings();
-				setBookings(data);
-				setError(null);
-			} catch (err) {
-				setError(err);
-			} finally {
-				setLoading(false);
-			}
-		};
-		fetchBookings();
-	}, []);
+	function toDateString(date) {
+		const d = new Date(date);
+		return d.toISOString().split("T")[0];
+	}
+	const todayStr = toDateString(new Date());
 
-	if (loading) return <div>Loading your bookings...</div>;
-	if (error) return <div>Error: {error.message}</div>;
-	if (!bookings.length) return <div>You have no bookings yet.</div>;
+	const myBookings = bookings.filter(
+		(b) => currentUser && b.user_id === currentUser.id,
+	);
+	const upcomingBookings = myBookings.filter(
+		(b) => toDateString(b.from_date) >= todayStr,
+	);
+	const pastBookings = myBookings.filter(
+		(b) => toDateString(b.from_date) < todayStr,
+	);
+	const displayedBookings =
+		tab === "upcoming" ? upcomingBookings : pastBookings;
 
 	return (
-		<div>
+		<div className="my-bookings-container">
+			<div className="my-bookings-tabs">
+				<button
+					className={tab === "upcoming" ? "active" : ""}
+					onClick={() => setTab("upcoming")}
+				>
+					Upcoming
+				</button>
+				<button
+					className={tab === "past" ? "active" : ""}
+					onClick={() => setTab("past")}
+				>
+					Past
+				</button>
+			</div>
 			<h2>My Bookings</h2>
-			<ul>
-				{bookings.map((booking) => (
-					<li key={booking.booking_id}>
-						Desk: <strong>{booking.desk_name || booking.desk_id}</strong> <br />
-						Date: {new Date(booking.from_date).toLocaleDateString()} <br />
-					</li>
-				))}
-			</ul>
+			{loading ? (
+				<div>Loading your bookings...</div>
+			) : error ? (
+				<div>Error: {error.message}</div>
+			) : !displayedBookings.length ? (
+				<div>You have no {tab} bookings yet.</div>
+			) : (
+				<ul>
+					{displayedBookings.map((booking) => (
+						<li key={booking.booking_id}>
+							Desk: <strong>{booking.desk_name || booking.desk_id}</strong>{" "}
+							<br />
+							Date: {new Date(booking.from_date).toLocaleDateString()} <br />
+						</li>
+					))}
+				</ul>
+			)}
 		</div>
 	);
 };

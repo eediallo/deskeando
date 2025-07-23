@@ -8,14 +8,8 @@ import Home from "./Home";
 import "./Dashboard.css";
 
 const Dashboard = () => {
-	const { setIsAuthenticated, currentUser } = useAppContext();
+	const { currentUser, logout } = useAppContext();
 	const [tab, setTab] = useState("desks");
-
-	const handleLogout = () => {
-		setIsAuthenticated(false);
-		// Optionally, clear cookies/localStorage here
-		window.location.href = "/login";
-	};
 
 	return (
 		<div className="dashboard">
@@ -24,7 +18,13 @@ const Dashboard = () => {
 					<button onClick={() => setTab("desks")}>Desks View</button>
 					<button onClick={() => setTab("calendar")}>Calendar View</button>
 				</div>
-				<UserMenu user={currentUser} logout={handleLogout} />
+				<UserMenu
+					user={currentUser}
+					logout={async () => {
+						await logout();
+						window.location.href = "/login";
+					}}
+				/>
 			</aside>
 			<main className="dashboard-main">
 				{tab === "desks" && <Home />}

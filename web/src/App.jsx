@@ -5,9 +5,8 @@ import { useLocation } from "react-router-dom";
 
 import Hero from "./assets/hero.jpg";
 import Header from "./components/Header";
-import { useAppContext } from "./context/useAppContext";
 import "./App.css";
-// import About from "./pages/About.jsx";
+import { useAppContext } from "./context/useAppContext";
 import Dashboard from "./pages/Dashboard.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
@@ -53,6 +52,8 @@ function App() {
 }
 
 function ProtectedRoute({ isAuthenticated, children }) {
+	const { loading } = useAppContext();
+	if (loading) return null;
 	if (isAuthenticated) return children;
 	return <Navigate to="/login" replace />;
 }

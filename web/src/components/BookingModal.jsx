@@ -1,5 +1,6 @@
 import "./BookingModal.css";
 import PropTypes from "prop-types";
+import { useState } from "react";
 
 const BookingModal = ({
 	desk,
@@ -11,6 +12,10 @@ const BookingModal = ({
 	users,
 	error,
 }) => {
+	const [selectedDate, setSelectedDate] = useState(
+		new Date().toISOString().split("T")[0],
+	);
+
 	if (!desk) return null;
 
 	const findUser = (userId) => {
@@ -19,10 +24,23 @@ const BookingModal = ({
 
 	const renderContent = () => {
 		if (!booking) {
+			const today = new Date().toISOString().split("T")[0];
 			return (
 				<>
 					<h2>Book Desk {desk.name}</h2>
 					<button onClick={() => onBook(desk.id)}>Book this desk</button>
+					<label htmlFor="booking-date">Choose Date: </label>
+					<input
+						type="date"
+						id="booking-date"
+						name="booking-date"
+						min={today}
+						value={selectedDate}
+						onChange={(e) => setSelectedDate(e.target.value)}
+					></input>
+					<button onClick={() => onBook(desk.id, selectedDate)}>
+						Book this desk
+					</button>
 				</>
 			);
 		}

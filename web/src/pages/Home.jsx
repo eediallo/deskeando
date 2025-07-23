@@ -51,11 +51,12 @@ const Home = () => {
 		setModalError("");
 	};
 
-	const handleBook = async (deskId) => {
+	const handleBook = async (deskId, selectedDate) => {
 		try {
 			const bookingData = {
 				userId: currentUserId,
 				deskId,
+				bookingDate: selectedDate,
 			};
 			const newBooking = await createBooking(bookingData);
 			setBookings([...bookings, newBooking]);

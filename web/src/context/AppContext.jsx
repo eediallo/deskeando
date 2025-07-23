@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { createContext, useState, useEffect } from "react";
 
-import { getUsers, getDesks, getBookings } from "../services/apiService";
+import { getUsers, getDesks } from "../services/apiService";
 
 const AppContext = createContext();
 export { AppContext };
@@ -9,7 +9,6 @@ export { AppContext };
 export const AppProvider = ({ children }) => {
 	const [users, setUsers] = useState([]);
 	const [desks, setDesks] = useState([]);
-	const [bookings, setBookings] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -40,17 +39,15 @@ export const AppProvider = ({ children }) => {
 		if (!isAuthenticated) {
 			setUsers([]);
 			setDesks([]);
-			setBookings([]);
 			setCurrentUser(null);
 			return;
 		}
 		const fetchData = async () => {
 			setLoading(true);
 			try {
-				const [usersData, desksData, bookingsData] = await Promise.all([
+				const [usersData, desksData] = await Promise.all([
 					getUsers(),
 					getDesks(),
-					getBookings(),
 				]);
 				const mappedUsers = usersData.map((u) => ({
 					...u,
@@ -59,7 +56,6 @@ export const AppProvider = ({ children }) => {
 				}));
 				setUsers(mappedUsers);
 				setDesks(desksData);
-				setBookings(bookingsData);
 				// If currentUser is not set, try to find by email from localStorage (if available)
 				if (!currentUser) {
 					const storedEmail = localStorage.getItem("loggedInEmail");
@@ -76,10 +72,6 @@ export const AppProvider = ({ children }) => {
 			}
 		};
 		fetchData();
-		const intervalId = setInterval(() => {
-			getBookings().then(setBookings).catch(setError);
-		}, 5000);
-		return () => clearInterval(intervalId);
 	}, [isAuthenticated, currentUser]);
 
 	return (
@@ -87,10 +79,8 @@ export const AppProvider = ({ children }) => {
 			value={{
 				users,
 				desks,
-				bookings,
 				loading,
 				error,
-				setBookings,
 				isAuthenticated,
 				setIsAuthenticated,
 				currentUser,

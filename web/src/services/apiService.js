@@ -49,7 +49,25 @@ export async function getDesks() {
 	return response.json();
 }
 
-export async function getBookings() {
+export async function getBookingsFiltered({ from, to, userId } = {}) {
+	const params = new URLSearchParams();
+	if (from) params.append("from", from);
+	if (to) params.append("to", to);
+	if (userId) params.append("userId", userId);
+	const query = params.toString() ? `?${params.toString()}` : "";
+	const response = await fetch(`${API_BASE_URL}/bookings${query}`, {
+		credentials: "include",
+	});
+	if (!response.ok) {
+		throw new Error("Failed to fetch bookings");
+	}
+	return response.json();
+}
+
+export async function getBookings(params) {
+	if (params) {
+		return getBookingsFiltered(params);
+	}
 	const response = await fetch(`${API_BASE_URL}/bookings`, {
 		credentials: "include",
 	});
@@ -69,7 +87,8 @@ export async function createBooking(bookingData) {
 		credentials: "include",
 	});
 	if (!response.ok) {
-		throw new Error("Failed to create booking");
+		const error = await response.json().catch(() => ({}));
+		throw new Error(error.error || "Failed to create booking");
 	}
 	return response.json();
 }

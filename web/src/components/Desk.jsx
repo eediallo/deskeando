@@ -6,7 +6,7 @@ const Desk = ({ desk, booking, onClick, currentUserId }) => {
 		if (!booking) {
 			return "desk-available";
 		}
-		if (booking.user_id === currentUserId) {
+		if (String(booking.user_id) === String(currentUserId)) {
 			return "desk-user-booked";
 		}
 		return "desk-unavailable";
@@ -37,5 +37,5 @@ Desk.propTypes = {
 	desk: PropTypes.object.isRequired,
 	booking: PropTypes.object,
 	onClick: PropTypes.func.isRequired,
-	currentUserId: PropTypes.number,
+	currentUserId: PropTypes.string,
 };

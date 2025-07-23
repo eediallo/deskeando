@@ -29,5 +29,5 @@ DeskGrid.propTypes = {
 	desks: PropTypes.array.isRequired,
 	bookings: PropTypes.array.isRequired,
 	onDeskClick: PropTypes.func.isRequired,
-	currentUserId: PropTypes.number,
+	currentUserId: PropTypes.string,
 };

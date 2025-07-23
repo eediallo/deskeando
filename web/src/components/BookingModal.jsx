@@ -9,6 +9,7 @@ const BookingModal = ({
 	onCancel,
 	currentUserId,
 	users,
+	error,
 }) => {
 	if (!desk) return null;
 
@@ -70,6 +71,9 @@ const BookingModal = ({
 		>
 			<div className="modal-content">
 				{renderContent()}
+				{error && (
+					<div style={{ color: "red", marginTop: "1rem" }}>{error}</div>
+				)}
 				{/* The close button is already interactive and has a click handler. */}
 				{/* No additional keyboard listener is needed for the button itself. */}
 				{/* The modal overlay already handles keyboard events for closing the modal. */}
@@ -102,6 +106,7 @@ BookingModal.propTypes = {
 			lastName: PropTypes.string,
 		}),
 	).isRequired,
+	error: PropTypes.string,
 };
 
 export default BookingModal;

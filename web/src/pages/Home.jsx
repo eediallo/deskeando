@@ -1,30 +1,46 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import BookingModal from "../components/BookingModal";
 import DeskGrid from "../components/DeskGrid";
 import { useAppContext } from "../context/useAppContext";
-import { createBooking, deleteBooking } from "../services/apiService";
+import {
+	createBooking,
+	deleteBooking,
+	getBookingsFiltered,
+} from "../services/apiService";
 
 const Home = () => {
-	const { desks, bookings, users, loading, error, setBookings } =
-		useAppContext();
+	const { desks, users, loading, error } = useAppContext();
+	const [bookings, setBookings] = useState([]);
 	const [selectedDesk, setSelectedDesk] = useState(null);
 	const [selectedBooking, setSelectedBooking] = useState(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [modalError, setModalError] = useState("");
 	// Use the logged-in user from context
 	const { currentUser } = useAppContext();
-	const currentUserId = currentUser ? currentUser.id : null;
+	const currentUserId = currentUser ? String(currentUser.id) : null;
 
-	// Filter bookings to only today's date
-	const today = new Date().toISOString().split("T")[0];
-	const todaysBookings = bookings.filter((b) => {
-		const bookingDate = new Date(b.from_date).toISOString().split("T")[0];
-		return bookingDate === today;
-	});
+	// Debug log
+	console.log("bookings:", bookings, "currentUserId:", currentUserId);
+
+	useEffect(() => {
+		if (!currentUserId) return;
+		const today = new Date().toISOString().split("T")[0];
+		getBookingsFiltered({ from: today, to: today })
+			.then(setBookings)
+			.catch((err) => alert(err.message || "Failed to fetch bookings"));
+		const intervalId = setInterval(() => {
+			getBookingsFiltered({ from: today, to: today })
+				.then(setBookings)
+				.catch(() => {});
+		}, 5000);
+		return () => clearInterval(intervalId);
+	}, [currentUserId]);
 
 	const handleDeskClick = (desk, booking) => {
 		setSelectedDesk(desk);
 		setSelectedBooking(booking);
+		setModalError("");
 		setIsModalOpen(true);
 	};
 
@@ -32,6 +48,7 @@ const Home = () => {
 		setIsModalOpen(false);
 		setSelectedDesk(null);
 		setSelectedBooking(null);
+		setModalError("");
 	};
 
 	const handleBook = async (deskId) => {
@@ -42,20 +59,20 @@ const Home = () => {
 			};
 			const newBooking = await createBooking(bookingData);
 			setBookings([...bookings, newBooking]);
+			handleCloseModal();
 		} catch (err) {
-			alert(err.message || "Failed to book desk");
+			setModalError(err.message || "Failed to book desk");
 		}
-		handleCloseModal();
 	};
 
 	const handleCancel = async (bookingId) => {
 		try {
 			await deleteBooking(bookingId);
 			setBookings(bookings.filter((b) => b.booking_id !== bookingId));
+			handleCloseModal();
 		} catch (err) {
-			alert(err.message || "Failed to cancel booking");
+			setModalError(err.message || "Failed to cancel booking");
 		}
-		handleCloseModal();
 	};
 
 	if (loading) return <p>Loading...</p>;
@@ -72,7 +89,7 @@ const Home = () => {
 			)} */}
 			<DeskGrid
 				desks={desks}
-				bookings={todaysBookings}
+				bookings={bookings}
 				onDeskClick={handleDeskClick}
 				currentUserId={currentUserId}
 			/>
@@ -85,6 +102,7 @@ const Home = () => {
 					onCancel={handleCancel}
 					currentUserId={currentUserId}
 					users={users}
+					error={modalError}
 				/>
 			)}
 		</div>

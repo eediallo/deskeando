@@ -9,11 +9,17 @@ import {
 	getAllBookings,
 	deleteBookingById,
 	getBookingById,
+	getFilteredBookingsService,
 } from "./bookingService.js";
 
 const router = Router();
 
-router.get("/", authenticate, async (_, res) => {
+router.get("/", authenticate, async (req, res) => {
+	const { from, to, userId } = req.query;
+	if (from || to || userId) {
+		const bookings = await getFilteredBookingsService({ from, to, userId });
+		return res.json(bookings);
+	}
 	const bookings = await getAllBookings();
 	res.json(bookings);
 });

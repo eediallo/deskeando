@@ -103,9 +103,9 @@ export async function deleteOneBookingById(id) {
 }
 
 export async function createBooking({ userId, deskId, date }) {
-	const now = new Date();
-	now.setUTCHours(19, 0, 0, 0);
-	const toDate = now.toISOString();
+	const till = new Date(date);
+	till.setUTCHours(19, 0, 0, 0);
+	const toDate = till.toISOString();
 
 	const values = [userId, deskId, date, toDate];
 	const { rows } = await db.query(

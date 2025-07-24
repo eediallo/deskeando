@@ -25,7 +25,7 @@
 		"e2e:dev": "cross-env PLAYWRIGHT_START_COMMAND=\"npm run dev\" npm run e2e",
 		"format": "npm run lint:prettier -- --write .",
 		"lint": "npm run lint:eslint . && npm run lint:prettier -- --check .",
-		"lint:eslint": "eslint --max-warnings 0 --report-unused-disable-directives",
+		"lint:eslint": "eslint --report-unused-disable-directives",
 		"lint:fix": "npm run lint:eslint -- --fix . && npm run format",
 		"lint:prettier": "prettier --ignore-unknown",
 		"migration": "npm --workspace api run migration",

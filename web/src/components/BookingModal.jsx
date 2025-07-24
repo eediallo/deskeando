@@ -10,6 +10,7 @@ const BookingModal = ({
 	onCancel,
 	currentUserId,
 	users,
+	error,
 }) => {
 	const [selectedDate, setSelectedDate] = useState(
 		new Date().toISOString().split("T")[0],
@@ -27,7 +28,6 @@ const BookingModal = ({
 			return (
 				<>
 					<h2>Book Desk {desk.name}</h2>
-					<button onClick={() => onBook(desk.id)}>Book this desk</button>
 					<label htmlFor="booking-date">Choose Date: </label>
 					<input
 						type="date"
@@ -88,6 +88,9 @@ const BookingModal = ({
 		>
 			<div className="modal-content">
 				{renderContent()}
+				{error && (
+					<div style={{ color: "red", marginTop: "1rem" }}>{error}</div>
+				)}
 				{/* The close button is already interactive and has a click handler. */}
 				{/* No additional keyboard listener is needed for the button itself. */}
 				{/* The modal overlay already handles keyboard events for closing the modal. */}
@@ -120,6 +123,7 @@ BookingModal.propTypes = {
 			lastName: PropTypes.string,
 		}),
 	).isRequired,
+	error: PropTypes.string,
 };
 
 export default BookingModal;

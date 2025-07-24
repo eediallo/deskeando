@@ -9,11 +9,18 @@ import {
 	getAllBookings,
 	deleteBookingById,
 	getBookingById,
+	getFilteredBookingsService,
+	getBookingsForUserSplit,
 } from "./bookingService.js";
 
 const router = Router();
 
-router.get("/", authenticate, async (_, res) => {
+router.get("/", authenticate, async (req, res) => {
+	const { from, to, userId } = req.query;
+	if (from || to || userId) {
+		const bookings = await getFilteredBookingsService({ from, to, userId });
+		return res.json(bookings);
+	}
 	const bookings = await getAllBookings();
 	res.json(bookings);
 });
@@ -52,6 +59,18 @@ router.delete("/:id", authenticate, async (req, res) => {
 
 	await deleteBookingById(bookingId);
 	res.status(204).send();
+});
+
+// Get current user's bookings (past & upcoming)
+router.get("/my", authenticate, async (req, res) => {
+	const userId = req.user?.id;
+	if (!userId) {
+		return res
+			.status(StatusCodes.UNAUTHORIZED)
+			.json({ error: "Not authenticated" });
+	}
+	const result = await getBookingsForUserSplit(userId);
+	res.json(result);
 });
 
 export default router;

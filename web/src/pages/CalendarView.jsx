@@ -1,11 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useAppContext } from "../context/useAppContext";
+import { getBookingsFiltered } from "../services/apiService";
 import "./CalendarView.css";
 
 const CalendarView = () => {
-	const { bookings, desks, users } = useAppContext();
+	const { desks, users } = useAppContext();
 	const [currentDate, setCurrentDate] = useState(new Date());
+	const [bookings, setBookings] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState(null);
 
 	const getWeekDays = () => {
 		const weekDays = [];
@@ -22,6 +26,19 @@ const CalendarView = () => {
 	};
 
 	const weekDays = getWeekDays();
+
+	useEffect(() => {
+		const from = weekDays[0].toISOString().split("T")[0];
+		const to = weekDays[6].toISOString().split("T")[0];
+		setLoading(true);
+		getBookingsFiltered({ from, to })
+			.then((data) => {
+				setBookings(data);
+				setError(null);
+			})
+			.catch((err) => setError(err))
+			.finally(() => setLoading(false));
+	}, [currentDate]);
 
 	const findBooking = (deskId, date) => {
 		return bookings.find((booking) => {
@@ -48,6 +65,9 @@ const CalendarView = () => {
 		newDate.setDate(currentDate.getDate() + 7);
 		setCurrentDate(newDate);
 	};
+
+	if (loading) return <p>Loading...</p>;
+	if (error) return <p>Error: {error.message}</p>;
 
 	return (
 		<div className="calendar-view">

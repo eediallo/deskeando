@@ -118,3 +118,58 @@ export async function createBooking({ userId, deskId, date }) {
 	);
 	return rows[0];
 }
+
+export async function getFilteredBookings({ from, to, userId }) {
+	let query = `
+		SELECT 
+			b.id AS booking_id, 
+			b.desk_id, b.user_id, 
+			b.from_date, b.to_date, 
+			u.first_name, u.last_name, 
+			d.name AS desk_name 
+		FROM 
+			booking b 
+		JOIN "user" u ON b.user_id = u.id 
+		JOIN desk d ON b.desk_id = d.id
+		WHERE 1=1`;
+	const params = [];
+	let paramIndex = 1;
+
+	if (from) {
+		query += ` AND DATE(b.from_date) >= $${paramIndex++}`;
+		params.push(from);
+	}
+	if (to) {
+		query += ` AND DATE(b.from_date) <= $${paramIndex++}`;
+		params.push(to);
+	}
+	if (userId) {
+		query += ` AND b.user_id = $${paramIndex++}`;
+		params.push(userId);
+	}
+
+	query += ";";
+	const { rows } = await db.query(query, params);
+	return rows;
+}
+
+export async function getBookingsForUser(userId) {
+	const { rows } = await db.query(
+		sql`
+			SELECT 
+				b.id AS booking_id, 
+				b.desk_id, b.user_id, 
+				b.from_date, b.to_date, 
+				u.first_name, u.last_name, 
+				d.name AS desk_name 
+			FROM 
+				booking b 
+				JOIN "user" u ON b.user_id = u.id 
+				JOIN desk d ON b.desk_id = d.id
+			WHERE b.user_id = $1
+			ORDER BY b.from_date DESC;
+		`,
+		[userId],
+	);
+	return rows;
+}

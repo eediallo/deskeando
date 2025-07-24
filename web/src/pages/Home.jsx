@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import BookingModal from "../components/BookingModal";
 import DeskGrid from "../components/DeskGrid";
+import MyBookings from "../components/MyBookings";
 import { useAppContext } from "../context/useAppContext";
 import {
 	createBooking,
@@ -16,6 +17,7 @@ const Home = () => {
 	const [selectedBooking, setSelectedBooking] = useState(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [modalError, setModalError] = useState("");
+	const [myBookingsRefresh, setMyBookingsRefresh] = useState(0);
 	// Use the logged-in user from context
 	const { currentUser } = useAppContext();
 	const currentUserId = currentUser ? String(currentUser.id) : null;
@@ -60,6 +62,7 @@ const Home = () => {
 			};
 			const newBooking = await createBooking(bookingData);
 			setBookings([...bookings, newBooking]);
+			setMyBookingsRefresh((r) => r + 1); // trigger refresh
 			handleCloseModal();
 		} catch (err) {
 			setModalError(err.message || "Failed to book desk");
@@ -70,6 +73,7 @@ const Home = () => {
 		try {
 			await deleteBooking(bookingId);
 			setBookings(bookings.filter((b) => b.booking_id !== bookingId));
+			setMyBookingsRefresh((r) => r + 1); // trigger refresh
 			handleCloseModal();
 		} catch (err) {
 			setModalError(err.message || "Failed to cancel booking");
@@ -81,31 +85,36 @@ const Home = () => {
 	if (!currentUserId) return <p>Please log in to book a desk.</p>;
 
 	return (
-		<div>
-			<h1>Desk Booking</h1>
-			{/* {currentUser && (
-				<p style={{ marginBottom: "1rem" }}>
-					Logged in as: <strong>{formatUsername(currentUser)}</strong>
-				</p>
-			)} */}
-			<DeskGrid
-				desks={desks}
-				bookings={bookings}
-				onDeskClick={handleDeskClick}
-				currentUserId={currentUserId}
-			/>
-			{isModalOpen && (
-				<BookingModal
-					desk={selectedDesk}
-					booking={selectedBooking}
-					onClose={handleCloseModal}
-					onBook={handleBook}
-					onCancel={handleCancel}
+		<div style={{ display: "flex", gap: "2rem", alignItems: "flex-start" }}>
+			<div style={{ flex: 2 }}>
+				<h1>Desk Booking</h1>
+				{/* {currentUser && (
+					<p style={{ marginBottom: "1rem" }}>
+						Logged in as: <strong>{formatUsername(currentUser)}</strong>
+					</p>
+				)} */}
+				<DeskGrid
+					desks={desks}
+					bookings={bookings}
+					onDeskClick={handleDeskClick}
 					currentUserId={currentUserId}
-					users={users}
-					error={modalError}
 				/>
-			)}
+				{isModalOpen && (
+					<BookingModal
+						desk={selectedDesk}
+						booking={selectedBooking}
+						onClose={handleCloseModal}
+						onBook={handleBook}
+						onCancel={handleCancel}
+						currentUserId={currentUserId}
+						users={users}
+						error={modalError}
+					/>
+				)}
+			</div>
+			<div className="my-bookings-wrapper" style={{ flex: 1 }}>
+				<MyBookings refreshTrigger={myBookingsRefresh} />
+			</div>
 		</div>
 	);
 };

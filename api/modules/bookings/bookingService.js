@@ -10,6 +10,7 @@ import {
 	isDeskBookedOnDate,
 	createBooking,
 	getFilteredBookings,
+	getBookingsForUser,
 } from "./bookingRepository.js";
 
 export async function getAllBookings() {
@@ -54,4 +55,20 @@ export async function deleteBookingById(id) {
 
 export async function getFilteredBookingsService({ from, to, userId }) {
 	return await getFilteredBookings({ from, to, userId });
+}
+
+export async function getBookingsForUserSplit(userId) {
+	const all = await getBookingsForUser(userId);
+	const now = new Date();
+	const upcoming = [];
+	const past = [];
+	for (const b of all) {
+		const bookingDate = new Date(b.from_date);
+		if (bookingDate >= now) {
+			upcoming.push(b);
+		} else {
+			past.push(b);
+		}
+	}
+	return { past, upcoming };
 }

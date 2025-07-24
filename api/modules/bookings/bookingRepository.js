@@ -152,3 +152,24 @@ export async function getFilteredBookings({ from, to, userId }) {
 	const { rows } = await db.query(query, params);
 	return rows;
 }
+
+export async function getBookingsForUser(userId) {
+	const { rows } = await db.query(
+		sql`
+			SELECT 
+				b.id AS booking_id, 
+				b.desk_id, b.user_id, 
+				b.from_date, b.to_date, 
+				u.first_name, u.last_name, 
+				d.name AS desk_name 
+			FROM 
+				booking b 
+				JOIN "user" u ON b.user_id = u.id 
+				JOIN desk d ON b.desk_id = d.id
+			WHERE b.user_id = $1
+			ORDER BY b.from_date DESC;
+		`,
+		[userId],
+	);
+	return rows;
+}

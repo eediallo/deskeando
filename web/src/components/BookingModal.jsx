@@ -28,7 +28,6 @@ const BookingModal = ({
 			return (
 				<>
 					<h2>Book Desk {desk.name}</h2>
-					<button onClick={() => onBook(desk.id)}>Book this desk</button>
 					<label htmlFor="booking-date">Choose Date: </label>
 					<input
 						type="date"

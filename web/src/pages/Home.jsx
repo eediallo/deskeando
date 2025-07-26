@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import BookingModal from "../components/BookingModal";
 import DeskGrid from "../components/DeskGrid";
+import DeskStatusLegend from "../components/DeskStatusLegend";
 import MyBookings from "../components/MyBookings";
 import { useAppContext } from "../context/useAppContext";
 import {
@@ -87,7 +88,10 @@ const Home = () => {
 	return (
 		<div style={{ display: "flex", gap: "2rem", alignItems: "flex-start" }}>
 			<div style={{ flex: 2 }}>
-				<h1>Desk Booking</h1>
+
+				<h1>Office Available Desks</h1>
+				<DeskStatusLegend />
+
 				<DeskGrid
 					desks={desks}
 					bookings={bookings}

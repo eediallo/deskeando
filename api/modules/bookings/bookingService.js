@@ -60,15 +60,21 @@ export async function getFilteredBookingsService({ from, to, userId }) {
 export async function getBookingsForUserSplit(userId) {
 	const all = await getBookingsForUser(userId);
 	const now = new Date();
+	now.setHours(0, 0, 0, 0);
+
 	const upcoming = [];
 	const past = [];
+
 	for (const b of all) {
 		const bookingDate = new Date(b.from_date);
+		bookingDate.setHours(0, 0, 0, 0);
+
 		if (bookingDate >= now) {
 			upcoming.push(b);
 		} else {
 			past.push(b);
 		}
 	}
+
 	return { past, upcoming };
 }

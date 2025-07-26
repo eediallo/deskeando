@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import { useEffect, useState, useContext } from "react";
 
 import { AppContext } from "../context/AppContext";
@@ -7,7 +6,7 @@ import { getMyBookings, deleteBooking } from "../services/apiService";
 import BookingModal from "./BookingModal";
 import "./MyBookings.css";
 
-const MyBookings = ({ refreshTrigger }) => {
+const MyBookings = () => {
 	const [upcoming, setUpcoming] = useState([]);
 	const [past, setPast] = useState([]);
 	const [loading, setLoading] = useState(true);
@@ -17,7 +16,8 @@ const MyBookings = ({ refreshTrigger }) => {
 	const [selectedBooking, setSelectedBooking] = useState(null);
 	const [modalVisible, setModalVisible] = useState(false);
 
-	const { users, currentUser, notifyBookingChange } = useContext(AppContext);
+	const { users, currentUser, notifyBookingChange, bookingChangeCounter } =
+		useContext(AppContext);
 
 	useEffect(() => {
 		setLoading(true);
@@ -29,7 +29,7 @@ const MyBookings = ({ refreshTrigger }) => {
 			})
 			.catch((err) => setError(err))
 			.finally(() => setLoading(false));
-	}, [refreshTrigger]);
+	}, [bookingChangeCounter]);
 
 	const sortByDateAsc = (a, b) => new Date(a.from_date) - new Date(b.from_date);
 	const displayedBookings =
@@ -116,10 +116,6 @@ const MyBookings = ({ refreshTrigger }) => {
 			)}
 		</div>
 	);
-};
-
-MyBookings.propTypes = {
-	refreshTrigger: PropTypes.number,
 };
 
 export default MyBookings;

@@ -20,7 +20,6 @@ const Home = () => {
 	const [selectedBooking, setSelectedBooking] = useState(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [modalError, setModalError] = useState("");
-	const [myBookingsRefresh, setMyBookingsRefresh] = useState(0);
 
 	const currentUserId = currentUser ? String(currentUser.id) : null;
 
@@ -61,8 +60,7 @@ const Home = () => {
 			};
 			const newBooking = await createBooking(bookingData);
 			setBookings([...bookings, newBooking]);
-			setMyBookingsRefresh((r) => r + 1);
-			notifyBookingChange(); // Trigger calendar update
+			notifyBookingChange(); // Trigger calendar and MyBookings update
 			handleCloseModal();
 		} catch (err) {
 			setModalError(err.message || "Failed to book desk");
@@ -73,8 +71,7 @@ const Home = () => {
 		try {
 			await deleteBooking(bookingId);
 			setBookings(bookings.filter((b) => b.booking_id !== bookingId));
-			setMyBookingsRefresh((r) => r + 1);
-			notifyBookingChange(); // Trigger calendar update
+			notifyBookingChange(); // Trigger calendar and MyBookings update
 			handleCloseModal();
 		} catch (err) {
 			setModalError(err.message || "Failed to cancel booking");
@@ -88,7 +85,6 @@ const Home = () => {
 	return (
 		<div style={{ display: "flex", gap: "2rem", alignItems: "flex-start" }}>
 			<div style={{ flex: 2 }}>
-
 				<h1>Office Available Desks</h1>
 				<DeskStatusLegend />
 
@@ -112,7 +108,7 @@ const Home = () => {
 				)}
 			</div>
 			<div className="my-bookings-wrapper" style={{ flex: 1 }}>
-				<MyBookings refreshTrigger={myBookingsRefresh} />
+				<MyBookings />
 			</div>
 		</div>
 	);

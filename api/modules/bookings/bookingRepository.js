@@ -116,11 +116,27 @@ export async function createBooking({ userId, deskId, date }) {
   `,
 		values,
 	);
-	return rows[0];
+	const bookingId = rows[0].id;
+	const { rows: bookingRows } = await db.query(
+		sql`
+		SELECT 
+			b.id AS booking_id, 
+			b.desk_id, b.user_id, 
+			b.from_date, b.to_date, 
+			u.first_name, u.last_name, 
+			d.name AS desk_name 
+		FROM 
+			booking b 
+		JOIN "user" u ON b.user_id = u.id 
+		JOIN desk d ON b.desk_id = d.id
+		WHERE b.id = $1`,
+		[bookingId],
+	);
+	return bookingRows[0];
 }
 
 export async function getFilteredBookings({ from, to, userId }) {
-	let query = `
+	let query = sql`
 		SELECT 
 			b.id AS booking_id, 
 			b.desk_id, b.user_id, 
@@ -163,7 +179,7 @@ export async function getBookingsForUser(userId) {
 				u.first_name, u.last_name, 
 				d.name AS desk_name 
 			FROM 
-				booking b 
+				booking b
 				JOIN "user" u ON b.user_id = u.id 
 				JOIN desk d ON b.desk_id = d.id
 			WHERE b.user_id = $1

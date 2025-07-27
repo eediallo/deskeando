@@ -3,15 +3,13 @@
 	border: 1px solid #e0e0e0;
 	border-radius: 6px;
 	padding: 1rem;
-	min-height: 200px;
-	max-height: 70vh;
 	overflow-y: auto;
 	font-size: 1rem;
 }
 
 .my-bookings-wrapper {
 	min-width: 320px;
-	margin-top: 123px;
+	margin-top: 20px;
 }
 
 .my-bookings-tabs {

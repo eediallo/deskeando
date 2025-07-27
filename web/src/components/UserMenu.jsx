@@ -7,6 +7,9 @@ function formatUsername(user) {
 }
 
 const UserMenu = ({ user, logout }) => {
+	if (!user) {
+		return <span>No user data available</span>;
+	}
 	return (
 		<>
 			<details>

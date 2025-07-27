@@ -16,10 +16,10 @@ export default function DeskStatusLegend() {
 
 function LegendItem({ color, label }) {
 	return (
-		<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+		<div className="legend-status">
 			<span
 				style={{
-					display: "inline-block",
+					// display: "inline-block",
 					width: 24,
 					height: 24,
 					borderRadius: "50%",

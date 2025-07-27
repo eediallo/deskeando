@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import BookingModal from "../components/BookingModal";
 import DeskGrid from "../components/DeskGrid";
 import DeskStatusLegend from "../components/DeskStatusLegend";
-import MyBookings from "../components/MyBookings";
 import { useAppContext } from "../context/useAppContext";
 import {
 	createBooking,
@@ -20,7 +19,12 @@ const Home = () => {
 	const [selectedBooking, setSelectedBooking] = useState(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [modalError, setModalError] = useState("");
+	// const [myBookingsRefresh, setMyBookingsRefresh] = useState(0);
+	// Use the logged-in user from context
+	const { currentUser } = useAppContext();
+
 	const [myBookingsRefresh, setMyBookingsRefresh] = useState(0);
+
 
 	const currentUserId = currentUser ? String(currentUser.id) : null;
 
@@ -61,8 +65,10 @@ const Home = () => {
 			};
 			const newBooking = await createBooking(bookingData);
 			setBookings([...bookings, newBooking]);
+
 			setMyBookingsRefresh((r) => r + 1);
 			notifyBookingChange(); // Trigger calendar update
+
 			handleCloseModal();
 		} catch (err) {
 			setModalError(err.message || "Failed to book desk");
@@ -73,8 +79,14 @@ const Home = () => {
 		try {
 			await deleteBooking(bookingId);
 			setBookings(bookings.filter((b) => b.booking_id !== bookingId));
+
+			// setMyBookingsRefresh((r) => r + 1); // trigger refresh
+
+     
+      
 			setMyBookingsRefresh((r) => r + 1);
 			notifyBookingChange(); // Trigger calendar update
+
 			handleCloseModal();
 		} catch (err) {
 			setModalError(err.message || "Failed to cancel booking");
@@ -86,6 +98,10 @@ const Home = () => {
 	if (!currentUserId) return <p>Please log in to book a desk.</p>;
 
 	return (
+
+		<div>
+			<div>
+
 		<div style={{ display: "flex", gap: "2rem", alignItems: "flex-start" }}>
 			<div style={{ flex: 2 }}>
 
@@ -111,9 +127,9 @@ const Home = () => {
 					/>
 				)}
 			</div>
-			<div className="my-bookings-wrapper" style={{ flex: 1 }}>
+			{/* <div className="my-bookings-wrapper" style={{ flex: 1 }}>
 				<MyBookings refreshTrigger={myBookingsRefresh} />
-			</div>
+			</div> */}
 		</div>
 	);
 };

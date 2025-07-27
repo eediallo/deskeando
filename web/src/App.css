@@ -1,41 +1,77 @@
-#root {
-	max-width: 100%;
-	margin: 0 auto;
+.app-container {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+.app-container.with-sidebar {
+	display: grid;
+	grid-template-columns: 240px 1fr;
+	grid-template-rows: auto 1fr;
+	grid-template-areas:
+		"header header"
+		"sidebar main";
+}
+
+.main-content {
+	grid-area: main;
 	padding: 2rem;
+	overflow-y: auto;
+	background-color: #f9fafb;
+}
+
+.app-header {
+	grid-area: header;
+}
+
+.sidebar {
+	grid-area: sidebar;
 }
 
 .hero {
 	display: flex;
-	gap: 100px;
-	width: 900px;
-	margin: 0 auto;
+	align-items: center;
+	justify-content: center;
+	gap: 4rem;
+	padding: 4rem 2rem;
+	flex-grow: 1;
 }
 
-.hero-image {
-	width: 500px;
-	height: auto;
+.hero-description {
+	max-width: 500px;
+}
+
+.hero-description h1 {
+	font-size: 3.5rem;
+	margin-bottom: 1rem;
+}
+
+.hero-description p {
+	font-size: 1.25rem;
+	color: var(--light-text-color);
+	margin-bottom: 2rem;
 }
 
 .book-now-btn {
 	display: inline-block;
-	background-color: #646cff;
-	color: #ffff;
-	transition: background-color 0.3s ease;
-	padding: 10px;
-	margin-top: 10px;
+	padding: 1rem 2.5rem;
+	font-size: 1.1rem;
+	font-weight: 600;
+	background-color: var(--primary-color);
+	color: var(--white);
+	border-radius: var(--border-radius);
+	text-decoration: none;
+	transition: background-color 0.2s;
 }
 
 .book-now-btn:hover {
-	background-color: #4b54c6;
-	color: #ffff;
+	background-color: var(--primary-hover-color);
+	text-decoration: none;
+	color: var(--primary-color);
 }
 
-@media (max-width: 600px) {
-	.hero-description {
-		text-align: center;
-		margin-top: 10px;
-	}
-	.hero-image {
-		display: none;
-	}
+.hero-image {
+	max-width: 500px;
+	border-radius: var(--border-radius);
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }

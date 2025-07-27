@@ -9,7 +9,7 @@ const DeskGrid = ({ desks, bookings, onDeskClick, currentUserId }) => {
 	};
 
 	return (
-		<div className="desk-grid">
+		<div className="desk-grid" data-testid="desk-grid">
 			{desks.map((desk) => (
 				<Desk
 					key={desk.id}

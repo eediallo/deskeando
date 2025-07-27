@@ -1,33 +1,60 @@
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { http, HttpResponse } from "msw";
+import { render, screen, waitFor } from "@testing-library/react";
+import { vi } from "vitest";
 
+import * as apiService from "../services/apiService";
 import { server } from "../setupTests.js";
 
 import Home from "./Home.jsx";
 
+// Mock the API calls
+vi.spyOn(apiService, "getBookingsFiltered").mockResolvedValue([]);
+
+// Mock the components
+vi.mock("../components/BookingModal", () => ({
+	default: () => <div data-testid="booking-modal">Mocked Modal</div>,
+}));
+
+vi.mock("../components/DeskGrid", () => ({
+	default: () => <div data-testid="desk-grid">Mocked Desk Grid</div>,
+}));
+
+vi.mock("../components/DeskStatusLegend", () => ({
+	default: () => (
+		<div data-testid="desk-status-legend">Mocked Status Legend</div>
+	),
+}));
+
+// Mock the useAppContext hook
+vi.mock("../context/useAppContext", () => ({
+	useAppContext: () => ({
+		desks: [],
+		users: [],
+		loading: false,
+		error: null,
+		currentUser: { id: "user1", firstName: "Test", lastName: "User" },
+		notifyBookingChange: vi.fn(),
+	}),
+}));
+
 describe("Home component", () => {
-	beforeEach(() =>
-		server.use(http.get("/api/message", () => HttpResponse.text(""))),
-	);
+	beforeEach(() => server.use());
 
-	it("shows a link", () => {
+	it("should render the desk management interface", async () => {
 		render(<Home />);
 
-		expect(screen.getByRole("link", { name: "React logo" })).toHaveAttribute(
-			"href",
-			"https://react.dev",
-		);
-	});
+		// Check for heading
+		expect(screen.getByText("Office Available Desks")).toBeInTheDocument();
 
-	it("has a click counter", async () => {
-		const user = userEvent.setup();
-		render(<Home />);
+		// Check for components
+		await waitFor(() => {
+			expect(screen.getByTestId("desk-status-legend")).toBeInTheDocument();
+		});
 
-		await user.click(screen.getByRole("button", { name: /count is 0/i }));
+		await waitFor(() => {
+			expect(screen.getByTestId("desk-grid")).toBeInTheDocument();
+		});
 
-		await expect(
-			screen.findByRole("button", { name: /count is 1/ }),
-		).resolves.toBeInTheDocument();
+		// API should be called to get bookings
+		expect(apiService.getBookingsFiltered).toHaveBeenCalled();
 	});
 });

@@ -1,7 +1,10 @@
 import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 
-import { getMyBookings } from "../services/apiService";
+import { AppContext } from "../context/AppContext";
+import { getMyBookings, deleteBooking } from "../services/apiService";
+
+import BookingModal from "./BookingModal";
 import "./MyBookings.css";
 
 const MyBookings = ({ refreshTrigger }) => {
@@ -11,11 +14,10 @@ const MyBookings = ({ refreshTrigger }) => {
 	const [error, setError] = useState(null);
 	const [tab, setTab] = useState("upcoming");
 
-	// function toDateString(date) {
-	// 	const d = new Date(date);
-	// 	return d.toISOString().split("T")[0];
-	// }
-	// const todayStr = toDateString(new Date());
+	const [selectedBooking, setSelectedBooking] = useState(null);
+	const [modalVisible, setModalVisible] = useState(false);
+
+	const { users, currentUser, notifyBookingChange } = useContext(AppContext);
 
 	useEffect(() => {
 		setLoading(true);
@@ -29,12 +31,32 @@ const MyBookings = ({ refreshTrigger }) => {
 			.finally(() => setLoading(false));
 	}, [refreshTrigger]);
 
-	// Split into upcoming and past based on today's date
 	const sortByDateAsc = (a, b) => new Date(a.from_date) - new Date(b.from_date);
 	const displayedBookings =
 		tab === "upcoming"
 			? [...upcoming].sort(sortByDateAsc)
 			: [...past].sort(sortByDateAsc);
+
+	const openModal = (booking) => {
+		setSelectedBooking(booking);
+		setModalVisible(true);
+	};
+
+	const closeModal = () => {
+		setSelectedBooking(null);
+		setModalVisible(false);
+	};
+
+	const handleCancel = async (bookingId) => {
+		try {
+			await deleteBooking(bookingId);
+			setUpcoming((prev) => prev.filter((b) => b.booking_id !== bookingId));
+			notifyBookingChange();
+			closeModal();
+		} catch (err) {
+			alert("Failed to cancel booking: " + err.message);
+		}
+	};
 
 	return (
 		<div className="my-bookings-container">
@@ -66,9 +88,31 @@ const MyBookings = ({ refreshTrigger }) => {
 							Desk: <strong>{booking.desk_name || booking.desk_id}</strong>{" "}
 							<br />
 							Date: {new Date(booking.from_date).toLocaleDateString()} <br />
+							{tab === "upcoming" && (
+								<button onClick={() => openModal(booking)}>
+									Cancel Booking
+								</button>
+							)}
 						</li>
 					))}
 				</ul>
+			)}
+
+			{modalVisible && selectedBooking && (
+				<BookingModal
+					desk={{
+						id: selectedBooking.desk_id,
+						name:
+							selectedBooking.desk_name || `Desk ${selectedBooking.desk_id}`,
+					}}
+					booking={selectedBooking}
+					onClose={closeModal}
+					onBook={() => {}}
+					onCancel={handleCancel}
+					currentUserId={currentUser?.id}
+					users={users}
+					error={error?.message}
+				/>
 			)}
 		</div>
 	);

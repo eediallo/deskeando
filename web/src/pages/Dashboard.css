@@ -1,43 +1,111 @@
+.dashboard {
+	display: flex;
+	min-height: 100vh;
+	background: linear-gradient(120deg, #f8fafd 0%, #f7f0ff 100%);
+}
+
 .dashboard-sidebar {
+	width: 260px;
+	min-height: 100vh;
+	background: #fff;
+	box-shadow: 2px 0 16px 0 rgba(80, 80, 120, 0.07);
 	display: flex;
-	justify-content: space-between;
-	align-items: center;
+	flex-direction: column;
+	padding: 1.5rem;
+	z-index: 10;
 }
 
-.view-btns {
+.sidebar-user {
 	display: flex;
-	justify-content: center;
 	align-items: center;
-	gap: 10px;
+	gap: 0.75rem;
+	margin-bottom: 2rem;
+	padding-bottom: 1rem;
+	border-bottom: 1px solid #f0f0f0;
+	width: 100%;
 }
 
-@media (max-width: 1200px) {
-	.desk-grid {
-		display: flex;
-		flex-wrap: wrap;
-	}
+.sidebar-user-email {
+	font-weight: 500;
+	color: #333;
 }
 
-@media (max-width: 600px) {
-	.view-btns {
-		display: flex;
+.sidebar-nav {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	flex-grow: 1;
+	width: 100%;
+}
+
+.sidebar-nav button {
+	width: 100%;
+	padding: 0.85rem 1.25rem;
+	border: none;
+	background: none;
+	text-align: left;
+	font-size: 1rem;
+	font-weight: 500;
+	color: #555;
+	border-radius: 8px;
+	cursor: pointer;
+	transition:
+		background 0.2s,
+		color 0.2s;
+}
+
+.sidebar-nav button:hover {
+	background: #f4f6ff;
+	color: #333;
+}
+
+.sidebar-nav button.active {
+	background: linear-gradient(90deg, #e0e7ff, #c9d6ff);
+	color: #2c5282;
+	font-weight: 600;
+}
+
+.sidebar-bottom {
+	width: 100%;
+}
+
+.dashboard-main {
+	flex: 1;
+	padding: 2rem 3rem;
+	overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+	.dashboard {
 		flex-direction: column;
-		gap: 10px;
+	}
+
+	.dashboard-sidebar {
+		width: 100%;
+		min-height: auto;
+		flex-direction: row;
+		justify-content: space-between;
 		align-items: center;
+		padding: 0.5rem 1rem;
+		box-shadow: 0 2px 8px rgba(80, 80, 120, 0.07);
 	}
 
-	.dashboard h1 {
-		font-size: 1.5rem;
-		text-align: center;
+	.sidebar-user,
+	.sidebar-bottom {
+		display: none; /* Simplified for mobile, or handle differently */
 	}
 
-	.legend-status {
-		display: none;
+	.sidebar-nav {
+		flex-direction: row;
+		gap: 0.25rem;
+		flex-grow: 0;
 	}
 
-	.desk-grid {
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: center;
+	.sidebar-nav button {
+		padding: 0.5rem 0.75rem;
+	}
+
+	.dashboard-main {
+		padding: 1.5rem 1rem;
 	}
 }

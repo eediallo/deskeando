@@ -36,7 +36,7 @@ const Dashboard = () => {
 						className={activeTab === "dashboard" ? "active" : ""}
 						onClick={() => setActiveTab("dashboard")}
 					>
-						Dashboard
+						Desk View
 					</button>
 					<button
 						className={activeTab === "calendar" ? "active" : ""}

@@ -67,6 +67,7 @@
 .book-now-btn:hover {
 	background-color: var(--primary-hover-color);
 	text-decoration: none;
+	color: var(--primary-color);
 }
 
 .hero-image {

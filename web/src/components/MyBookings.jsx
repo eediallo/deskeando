@@ -38,7 +38,7 @@ const MyBookings = ({ refreshTrigger }) => {
 
 	return (
 		<div className="my-bookings-container">
-			<h2>My Bookings</h2>
+			{/* <h2>My Bookings</h2> */}
 			<div className="my-bookings-tabs">
 				<button
 					className={tab === "upcoming" ? "active" : ""}

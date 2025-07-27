@@ -15,6 +15,7 @@
 	.desk-grid {
 		display: flex;
 		flex-wrap: wrap;
+		justify-content: center;
 	}
 }
 
@@ -24,5 +25,14 @@
 		flex-direction: column;
 		gap: 10px;
 		align-items: center;
+	}
+
+	.dashboard h1 {
+		font-size: 1.5rem;
+		text-align: center;
+	}
+
+	.legend-status {
+		display: none;
 	}
 }

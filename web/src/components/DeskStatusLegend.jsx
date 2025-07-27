@@ -16,7 +16,7 @@ export default function DeskStatusLegend() {
 
 function LegendItem({ color, label }) {
 	return (
-		<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+		<div className="legend-status">
 			<span
 				style={{
 					display: "inline-block",

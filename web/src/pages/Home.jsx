@@ -86,8 +86,8 @@ const Home = () => {
 	if (!currentUserId) return <p>Please log in to book a desk.</p>;
 
 	return (
-		<div style={{ display: "flex", gap: "2rem", alignItems: "flex-start" }}>
-			<div style={{ flex: 2 }}>
+		<div>
+			<div>
 				<h1>Office Available Desks</h1>
 				<DeskStatusLegend />
 				<DeskGrid

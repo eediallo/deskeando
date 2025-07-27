@@ -1,15 +1,23 @@
 import { PostgreSqlContainer } from "@testcontainers/postgresql";
+import dotenv from "dotenv";
+dotenv.config();
 import { runner } from "node-pg-migrate";
 import { vi } from "vitest";
 
 import { connectDb, disconnectDb } from "./db.js";
 import config from "./utils/config.js";
 
-// Initialize config first
-config.init({
-	DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test",
-	PORT: "0",
-});
+// Initialize config first - this will use JWT_SECRET from environment variables
+// when available (in CI/CD), and we don't need to expose it here
+try {
+	// Initialize with default test values that will be overridden by
+	// actual environment variables if they exist
+	config.init({});
+} catch {
+	// In CI environments, we'll need to provide the JWT_SECRET
+	// We can't log here since logger depends on config
+	process.exitCode = 1;
+}
 
 // Then import logger
 const logger = await import("./utils/logger.js").then((m) => m.default);
@@ -37,7 +45,11 @@ beforeAll(async () => {
 			"sslmode",
 			url.searchParams.get("sslmode") ?? "disable",
 		);
-		config.init({ DATABASE_URL: url.toString(), PORT: "0" });
+		// Pass DATABASE_URL from container but keep using existing JWT_SECRET from environment
+		config.init({
+			DATABASE_URL: url.toString(),
+			PORT: "0",
+		});
 		await applyMigrations();
 		await connectDb();
 	} catch (error) {

@@ -1,7 +1,9 @@
 import "./BookingModal.css";
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
+
+import { getBookingsByDeskId } from "../services/apiService";
 
 import "react-datepicker/dist/react-datepicker.css";
 const BookingModal = ({
@@ -18,6 +20,38 @@ const BookingModal = ({
 	const [selectedDate, setSelectedDate] = useState(
 		new Date().toISOString().split("T")[0],
 	);
+	const [blockedDates, setBlockedDates] = useState([]);
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		const fetchBlockedDates = async () => {
+			if (!desk) return;
+
+			try {
+				const myBlockedDates = myBookings.map(
+					(booking) => new Date(booking.from_date),
+				);
+
+				const deskBookings = await getBookingsByDeskId(desk.id);
+				const deskBlockedDates = deskBookings.map(
+					(booking) => new Date(booking.from_date),
+				);
+
+				const all = [...myBlockedDates, ...deskBlockedDates];
+				const unique = Array.from(
+					new Set(all.map((d) => d.toDateString())),
+				).map((str) => new Date(str));
+
+				setBlockedDates(unique);
+			} catch (err) {
+				throw new Error(`Error fetching desk bookings: ${err}`, err);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchBlockedDates();
+	}, [desk, myBookings]);
 
 	if (!desk) return null;
 
@@ -27,9 +61,9 @@ const BookingModal = ({
 
 	const renderContent = () => {
 		if (!booking) {
-			const blockedDates = myBookings.map(
-				(booking) => new Date(booking.from_date),
-			);
+			if (loading) {
+				return <div>Loading available dates...</div>;
+			}
 			return (
 				<>
 					<div className="form-group">

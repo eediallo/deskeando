@@ -19,10 +19,6 @@ const Home = () => {
 	const [selectedBooking, setSelectedBooking] = useState(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [modalError, setModalError] = useState("");
-	// const [myBookingsRefresh, setMyBookingsRefresh] = useState(0);
-	// Use the logged-in user from context
-
-	const [setMyBookingsRefresh] = useState(0);
 
 	const currentUserId = currentUser ? String(currentUser.id) : null;
 
@@ -64,7 +60,6 @@ const Home = () => {
 			const newBooking = await createBooking(bookingData);
 			setBookings([...bookings, newBooking]);
 
-			setMyBookingsRefresh((r) => r + 1);
 			notifyBookingChange(); // Trigger calendar update
 
 			handleCloseModal();
@@ -78,9 +73,6 @@ const Home = () => {
 			await deleteBooking(bookingId);
 			setBookings(bookings.filter((b) => b.booking_id !== bookingId));
 
-			// setMyBookingsRefresh((r) => r + 1); // trigger refresh
-
-			setMyBookingsRefresh((r) => r + 1);
 			notifyBookingChange(); // Trigger calendar update
 
 			handleCloseModal();
@@ -118,9 +110,6 @@ const Home = () => {
 					/>
 				)}
 			</div>
-			{/* <div className="my-bookings-wrapper" style={{ flex: 1 }}>
-				<MyBookings refreshTrigger={myBookingsRefresh} />
-			</div> */}
 		</div>
 	);
 };

@@ -15,7 +15,6 @@
 	.desk-grid {
 		display: flex;
 		flex-wrap: wrap;
-		justify-content: center;
 	}
 }
 
@@ -34,5 +33,11 @@
 
 	.legend-status {
 		display: none;
+	}
+
+	.desk-grid {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
 	}
 }

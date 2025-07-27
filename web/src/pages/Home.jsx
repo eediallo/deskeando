@@ -8,6 +8,7 @@ import {
 	createBooking,
 	deleteBooking,
 	getBookingsFiltered,
+	getMyBookings,
 } from "../services/apiService";
 
 const Home = () => {
@@ -17,7 +18,7 @@ const Home = () => {
 	const [selectedBooking, setSelectedBooking] = useState(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [modalError, setModalError] = useState("");
-	const [myBookingsRefresh, setMyBookingsRefresh] = useState(0);
+	const [myBookings, setMyBookings] = useState([]);
 	// Use the logged-in user from context
 	const { currentUser } = useAppContext();
 	const currentUserId = currentUser ? String(currentUser.id) : null;
@@ -28,9 +29,18 @@ const Home = () => {
 	useEffect(() => {
 		if (!currentUserId) return;
 		const today = new Date().toISOString().split("T")[0];
+		// Fetch visible desk bookings
 		getBookingsFiltered({ from: today, to: today })
 			.then(setBookings)
 			.catch((err) => alert(err.message || "Failed to fetch bookings"));
+
+		// Fetch user's personal bookings
+		getMyBookings()
+			.then((data) => {
+				setMyBookings(Array.isArray(data.upcoming) ? data.upcoming : []);
+			})
+			.catch(() => {});
+
 		const intervalId = setInterval(() => {
 			getBookingsFiltered({ from: today, to: today })
 				.then(setBookings)
@@ -62,7 +72,7 @@ const Home = () => {
 			};
 			const newBooking = await createBooking(bookingData);
 			setBookings([...bookings, newBooking]);
-			setMyBookingsRefresh((r) => r + 1); // trigger refresh
+			setMyBookings([...myBookings, newBooking]);
 			handleCloseModal();
 		} catch (err) {
 			setModalError(err.message || "Failed to book desk");
@@ -73,7 +83,7 @@ const Home = () => {
 		try {
 			await deleteBooking(bookingId);
 			setBookings(bookings.filter((b) => b.booking_id !== bookingId));
-			setMyBookingsRefresh((r) => r + 1); // trigger refresh
+			setMyBookings(myBookings.filter((b) => b.booking_id !== bookingId));
 			handleCloseModal();
 		} catch (err) {
 			setModalError(err.message || "Failed to cancel booking");
@@ -109,11 +119,12 @@ const Home = () => {
 						currentUserId={currentUserId}
 						users={users}
 						error={modalError}
+						myBookings={myBookings}
 					/>
 				)}
 			</div>
 			<div className="my-bookings-wrapper" style={{ flex: 1 }}>
-				<MyBookings refreshTrigger={myBookingsRefresh} />
+				<MyBookings myBookings={myBookings} />
 			</div>
 		</div>
 	);

@@ -20,6 +20,17 @@ const Dashboard = () => {
 						<span className="sidebar-user-email">{currentUser?.email}</span>
 					</div>
 				</div>
+
+				<div className="sidebar-bottom">
+					<UserMenu
+						user={currentUser}
+						logout={async () => {
+							await logout();
+							window.location.href = "/login";
+						}}
+					/>
+				</div>
+
 				<div className="sidebar-nav">
 					<button
 						className={activeTab === "dashboard" ? "active" : ""}
@@ -39,15 +50,6 @@ const Dashboard = () => {
 					>
 						My Bookings
 					</button>
-				</div>
-				<div className="sidebar-bottom">
-					<UserMenu
-						user={currentUser}
-						logout={async () => {
-							await logout();
-							window.location.href = "/login";
-						}}
-					/>
 				</div>
 			</nav>
 			<main className="dashboard-main">

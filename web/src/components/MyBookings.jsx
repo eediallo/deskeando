@@ -1,35 +1,19 @@
 import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-import { getMyBookings } from "../services/apiService";
 import "./MyBookings.css";
 
-const MyBookings = ({ refreshTrigger }) => {
-	const [upcoming, setUpcoming] = useState([]);
-	const [past, setPast] = useState([]);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState(null);
+const MyBookings = ({ myBookings }) => {
 	const [tab, setTab] = useState("upcoming");
+	console.log("My Booking render: ", myBookings);
+	const today = new Date().toISOString().split("T")[0];
+	const upcoming = myBookings.filter(
+		(b) => new Date(b.from_date) >= new Date(today),
+	);
+	const past = myBookings.filter(
+		(b) => new Date(b.from_date) < new Date(today),
+	);
 
-	// function toDateString(date) {
-	// 	const d = new Date(date);
-	// 	return d.toISOString().split("T")[0];
-	// }
-	// const todayStr = toDateString(new Date());
-
-	useEffect(() => {
-		setLoading(true);
-		getMyBookings()
-			.then((data) => {
-				setUpcoming(Array.isArray(data.upcoming) ? data.upcoming : []);
-				setPast(Array.isArray(data.past) ? data.past : []);
-				setError(null);
-			})
-			.catch((err) => setError(err))
-			.finally(() => setLoading(false));
-	}, [refreshTrigger]);
-
-	// Split into upcoming and past based on today's date
 	const sortByDateAsc = (a, b) => new Date(a.from_date) - new Date(b.from_date);
 	const displayedBookings =
 		tab === "upcoming"
@@ -53,19 +37,16 @@ const MyBookings = ({ refreshTrigger }) => {
 				</button>
 			</div>
 			<h2>My Bookings</h2>
-			{loading ? (
-				<div>Loading your bookings...</div>
-			) : error ? (
-				<div>Error: {error.message}</div>
-			) : !displayedBookings.length ? (
+			{!displayedBookings.length ? (
 				<div>You have no {tab} bookings yet.</div>
 			) : (
 				<ul>
 					{displayedBookings.map((booking) => (
 						<li key={booking.booking_id}>
-							Desk: <strong>{booking.desk_name || booking.desk_id}</strong>{" "}
+							Desk: <strong>{booking.desk_name || booking.desk_id}</strong>
 							<br />
-							Date: {new Date(booking.from_date).toLocaleDateString()} <br />
+							Date: {new Date(booking.from_date).toLocaleDateString()}
+							<br />
 						</li>
 					))}
 				</ul>
@@ -75,7 +56,7 @@ const MyBookings = ({ refreshTrigger }) => {
 };
 
 MyBookings.propTypes = {
-	refreshTrigger: PropTypes.number,
+	myBookings: PropTypes.array,
 };
 
 export default MyBookings;

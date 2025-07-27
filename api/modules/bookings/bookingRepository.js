@@ -183,3 +183,22 @@ export async function getBookingsForUser(userId) {
 	);
 	return rows;
 }
+
+export async function getBookingsbyDesk(deskId) {
+	const { rows } = await db.query(
+		sql`
+			SELECT 
+				b.id AS booking_id, 
+				b.desk_id,
+				b.from_date, b.to_date, 
+				d.name AS desk_name 
+			FROM 
+				booking b
+				JOIN desk d ON b.desk_id = d.id
+			WHERE d.id = $1
+			ORDER BY b.from_date DESC;
+		`,
+		[deskId],
+	);
+	return rows;
+}

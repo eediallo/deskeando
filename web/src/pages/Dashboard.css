@@ -82,13 +82,27 @@
 	overflow-y: auto;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
+	.desk-grid {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		width: 100%;
+	}
 }
 @media (max-width: 768px) {
 	.dashboard {
 		flex-direction: column;
 	}
 
+	.dashboard-main {
+		margin: 0;
+	}
+
+	.dashboard h1 {
+		font-size: 1.5em;
+		text-align: center;
+	}
 	.menu-icon {
 		display: block;
 		position: absolute;

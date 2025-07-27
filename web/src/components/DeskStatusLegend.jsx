@@ -19,7 +19,7 @@ function LegendItem({ color, label }) {
 		<div className="legend-status">
 			<span
 				style={{
-					display: "inline-block",
+					// display: "inline-block",
 					width: 24,
 					height: 24,
 					borderRadius: "50%",

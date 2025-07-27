@@ -141,3 +141,10 @@ select:focus {
 	padding: 1.5rem;
 	box-shadow: var(--box-shadow);
 }
+
+@media (max-width: 1200px) {
+	#root {
+		padding: 0;
+		width: 100%;
+	}
+}

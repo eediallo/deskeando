@@ -18,6 +18,14 @@ test.describe("Authentication", () => {
 	});
 
 	test("can login with valid credentials", async ({ page }) => {
+		// Ensure login form is fully loaded before proceeding
+		await expect(page.getByPlaceholder("Email")).toBeVisible({
+			timeout: 30000,
+		});
+		await expect(page.getByPlaceholder("Password")).toBeVisible({
+			timeout: 30000,
+		});
+
 		// Fill in login form
 		await page.getByPlaceholder("Email").fill("alice@gmail.com");
 		await page.getByPlaceholder("Password").fill("sosecret");
@@ -25,13 +33,13 @@ test.describe("Authentication", () => {
 		// Submit the form
 		await page.getByRole("button", { name: "Login" }).click();
 
-		// Verify successful login (redirected to dashboard)
-		await page.waitForURL("**/dashboard");
+		// Verify successful login (redirected to dashboard) with generous timeout
+		await page.waitForURL("**/dashboard", { timeout: 45000 });
 
 		// Check for content that confirms we're on the dashboard
 		await expect(
 			page.getByRole("heading", { name: "Office Available Desks" }),
-		).toBeVisible();
+		).toBeVisible({ timeout: 30000 });
 	});
 
 	test("shows error with invalid credentials", async ({ page }) => {

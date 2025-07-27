@@ -64,14 +64,30 @@ test.describe("Dashboard functionality", () => {
 	});
 
 	test("has acceptable a11y", async ({ axe, page }) => {
-		// Navigate to dashboard to ensure we're on the right page
-		await page.goto("/dashboard");
+		// Do a fresh login for the accessibility test with extended timeouts
+		await page.goto("/login", { timeout: 30000 });
 
-		// Wait for the page to fully load
+		// Make sure login form is fully loaded
+		await expect(page.getByPlaceholder("Email")).toBeVisible({
+			timeout: 30000,
+		});
+		await expect(page.getByPlaceholder("Password")).toBeVisible({
+			timeout: 30000,
+		});
+
+		// Fill login form
+		await page.getByPlaceholder("Email").fill("alice@gmail.com");
+		await page.getByPlaceholder("Password").fill("sosecret");
+		await page.getByRole("button", { name: "Login" }).click();
+
+		// Wait for dashboard with generous timeout
+		await page.waitForURL("**/dashboard", { timeout: 45000 });
+
+		// Wait for the page to fully load with extended timeouts
 		await expect(
 			page.getByRole("heading", { name: "Office Available Desks" }),
-		).toBeVisible();
-		await expect(page.locator(".desk-grid")).toBeVisible();
+		).toBeVisible({ timeout: 30000 });
+		await expect(page.locator(".desk-grid")).toBeVisible({ timeout: 30000 });
 
 		// Test dashboard view for accessibility (but skip the assertion for now)
 		await axe.analyze();

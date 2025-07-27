@@ -14,7 +14,7 @@ const Dashboard = () => {
 	return (
 		<div className="dashboard">
 			<aside className="dashboard-sidebar">
-				<div>
+				<div className="view-btns">
 					<button onClick={() => setTab("desks")}>Desks View</button>
 					<button onClick={() => setTab("calendar")}>Calendar View</button>
 				</div>

@@ -3,3 +3,26 @@
 	justify-content: space-between;
 	align-items: center;
 }
+
+.view-btns {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+}
+
+@media (max-width: 1200px) {
+	.desk-grid {
+		display: flex;
+		flex-wrap: wrap;
+	}
+}
+
+@media (max-width: 600px) {
+	.view-btns {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		align-items: center;
+	}
+}

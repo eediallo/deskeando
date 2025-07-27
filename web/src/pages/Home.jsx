@@ -21,10 +21,8 @@ const Home = () => {
 	const [modalError, setModalError] = useState("");
 	// const [myBookingsRefresh, setMyBookingsRefresh] = useState(0);
 	// Use the logged-in user from context
-	const { currentUser } = useAppContext();
 
-	const [myBookingsRefresh, setMyBookingsRefresh] = useState(0);
-
+	const [setMyBookingsRefresh] = useState(0);
 
 	const currentUserId = currentUser ? String(currentUser.id) : null;
 
@@ -82,8 +80,6 @@ const Home = () => {
 
 			// setMyBookingsRefresh((r) => r + 1); // trigger refresh
 
-     
-      
 			setMyBookingsRefresh((r) => r + 1);
 			notifyBookingChange(); // Trigger calendar update
 
@@ -98,13 +94,8 @@ const Home = () => {
 	if (!currentUserId) return <p>Please log in to book a desk.</p>;
 
 	return (
-
-		<div>
-			<div>
-
 		<div style={{ display: "flex", gap: "2rem", alignItems: "flex-start" }}>
 			<div style={{ flex: 2 }}>
-
 				<h1>Office Available Desks</h1>
 				<DeskStatusLegend />
 

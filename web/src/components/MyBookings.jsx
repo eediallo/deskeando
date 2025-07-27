@@ -38,6 +38,7 @@ const MyBookings = ({ refreshTrigger }) => {
 
 	return (
 		<div className="my-bookings-container">
+			<h2>My Bookings</h2>
 			<div className="my-bookings-tabs">
 				<button
 					className={tab === "upcoming" ? "active" : ""}
@@ -52,7 +53,6 @@ const MyBookings = ({ refreshTrigger }) => {
 					Past
 				</button>
 			</div>
-			<h2>My Bookings</h2>
 			{loading ? (
 				<div>Loading your bookings...</div>
 			) : error ? (

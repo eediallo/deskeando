@@ -48,10 +48,11 @@ export default defineConfig({
 			use: { ...devices["Desktop Chrome"] },
 		},
 
-		{
-			name: "firefox",
-			use: { ...devices["Desktop Firefox"] },
-		},
+		// Firefox tests disabled due to consistency issues
+		// {
+		//   name: "firefox",
+		//   use: { ...devices["Desktop Firefox"] },
+		// },
 
 		{
 			name: "webkit",

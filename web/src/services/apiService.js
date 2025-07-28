@@ -156,3 +156,4 @@ export async function getBookingsByDeskId(deskId) {
 	const data = await response.json();
 	return data;
 }
+

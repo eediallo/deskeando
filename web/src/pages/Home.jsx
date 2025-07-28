@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import BookingModal from "../components/BookingModal";
 import DeskGrid from "../components/DeskGrid";
-import MyBookings from "../components/MyBookings";
+import DeskStatusLegend from "../components/DeskStatusLegend";
 import { useAppContext } from "../context/useAppContext";
 import {
 	createBooking,
@@ -12,7 +12,9 @@ import {
 } from "../services/apiService";
 
 const Home = () => {
-	const { desks, users, loading, error } = useAppContext();
+	const { desks, users, loading, error, currentUser, notifyBookingChange } =
+		useAppContext();
+
 	const [bookings, setBookings] = useState([]);
 	const [selectedDesk, setSelectedDesk] = useState(null);
 	const [selectedBooking, setSelectedBooking] = useState(null);
@@ -23,8 +25,8 @@ const Home = () => {
 	const { currentUser } = useAppContext();
 	const currentUserId = currentUser ? String(currentUser.id) : null;
 
-	// Debug log
-	console.log("bookings:", bookings, "currentUserId:", currentUserId);
+
+	const currentUserId = currentUser ? String(currentUser.id) : null;
 
 	useEffect(() => {
 		if (!currentUserId) return;
@@ -97,12 +99,9 @@ const Home = () => {
 	return (
 		<div style={{ display: "flex", gap: "2rem", alignItems: "flex-start" }}>
 			<div style={{ flex: 2 }}>
-				<h1>Desk Booking</h1>
-				{/* {currentUser && (
-					<p style={{ marginBottom: "1rem" }}>
-						Logged in as: <strong>{formatUsername(currentUser)}</strong>
-					</p>
-				)} */}
+				<h1>Office Available Desks</h1>
+				<DeskStatusLegend />
+
 				<DeskGrid
 					desks={desks}
 					bookings={bookings}

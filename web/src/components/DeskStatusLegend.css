@@ -1,0 +1,27 @@
+.desk-status-legend {
+	margin: 1rem 0;
+}
+
+.legend-items {
+	display: flex;
+	gap: 2rem;
+	align-items: center;
+}
+
+.legend-status {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+@media (max-width: 700px) {
+	.legend-items {
+		flex-direction: column;
+		gap: 0.75rem;
+		align-items: flex-start;
+	}
+
+	.legend-status {
+		display: none;
+	}
+}

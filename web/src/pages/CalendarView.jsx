@@ -5,11 +5,12 @@ import { getBookingsFiltered } from "../services/apiService";
 import "./CalendarView.css";
 
 const CalendarView = () => {
-	const { desks, users } = useAppContext();
+	const { desks, users, bookingChangeCounter } = useAppContext();
 	const [currentDate, setCurrentDate] = useState(new Date());
 	const [bookings, setBookings] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
+	// const [refreshFlag, setRefreshFlag] = useState(0);
 
 	const getWeekDays = () => {
 		const weekDays = [];
@@ -38,7 +39,7 @@ const CalendarView = () => {
 			})
 			.catch((err) => setError(err))
 			.finally(() => setLoading(false));
-	}, [currentDate]);
+	}, [currentDate, bookingChangeCounter]);
 
 	const findBooking = (deskId, date) => {
 		return bookings.find((booking) => {
@@ -65,6 +66,10 @@ const CalendarView = () => {
 		newDate.setDate(currentDate.getDate() + 7);
 		setCurrentDate(newDate);
 	};
+
+	// const refreshBookings = () => {
+	// 	setRefreshFlag((prev) => prev + 1);
+	// };
 
 	if (loading) return <p>Loading...</p>;
 	if (error) return <p>Error: {error.message}</p>;

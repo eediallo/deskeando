@@ -107,20 +107,30 @@ export async function createBooking({ userId, deskId, date }) {
 	till.setUTCHours(19, 0, 0, 0);
 	const toDate = till.toISOString();
 
-	const values = [userId, deskId, date, toDate];
 	const { rows } = await db.query(
 		sql`
+		WITH new_booking AS (
 		INSERT INTO booking (user_id, desk_id, from_date, to_date)
 			VALUES ($1, $2, $3, $4)
-		RETURNING *;
-  `,
-		values,
+		RETURNING *)
+		SELECT 
+			b.id AS booking_id, 
+			b.desk_id, b.user_id, 
+			b.from_date, b.to_date, 
+			u.first_name, u.last_name, 
+			d.name AS desk_name 
+		FROM 
+			new_booking b 
+		JOIN "user" u ON b.user_id = u.id 
+		JOIN desk d ON b.desk_id = d.id
+  		`,
+		[userId, deskId, date, toDate],
 	);
 	return rows[0];
 }
 
 export async function getFilteredBookings({ from, to, userId }) {
-	let query = `
+	let query = sql`
 		SELECT 
 			b.id AS booking_id, 
 			b.desk_id, b.user_id, 
@@ -170,6 +180,25 @@ export async function getBookingsForUser(userId) {
 			ORDER BY b.from_date DESC;
 		`,
 		[userId],
+	);
+	return rows;
+}
+
+export async function getBookingsbyDesk(deskId) {
+	const { rows } = await db.query(
+		sql`
+			SELECT 
+				b.id AS booking_id, 
+				b.desk_id,
+				b.from_date, b.to_date, 
+				d.name AS desk_name 
+			FROM 
+				booking b
+				JOIN desk d ON b.desk_id = d.id
+			WHERE d.id = $1
+			ORDER BY b.from_date DESC;
+		`,
+		[deskId],
 	);
 	return rows;
 }

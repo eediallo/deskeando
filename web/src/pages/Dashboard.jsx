@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import UserMenu from "../components/UserMenu";
 import { useAppContext } from "../context/useAppContext";
+import { getMyBookings } from "../services/apiService";
 
 import CalendarView from "./CalendarView";
 import Home from "./Home";
@@ -9,12 +10,26 @@ import MyBookingsPage from "./MyBookingsPage";
 import "./Dashboard.css";
 
 const Dashboard = () => {
-	const { currentUser, logout } = useAppContext();
+	const { currentUser, logout, loading, error } = useAppContext();
 	const [activeTab, setActiveTab] = useState("dashboard");
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+	const [myBookings, setMyBookings] = useState({ upcoming: [], past: [] });
+
+	const refreshBookings = async () => {
+		// setLoading(true);
+		const data = await getMyBookings();
+		setMyBookings(data);
+		// setError(null);
+	};
+
+	useEffect(() => {
+		if (currentUser) refreshBookings();
+	}, [currentUser]);
 
 	return (
 		<div className="dashboard">
+			{loading && <p>Loading...</p>}
+			{error && <p>Error: {error.message}</p>}
 			<div
 				className="menu-icon"
 				onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -79,9 +94,16 @@ const Dashboard = () => {
 			</nav>
 
 			<main className="dashboard-main">
-				{activeTab === "dashboard" && <Home />}
+				{activeTab === "dashboard" && (
+					<Home myBookings={myBookings} refreshBookings={refreshBookings} />
+				)}
 				{activeTab === "calendar" && <CalendarView />}
-				{activeTab === "bookings" && <MyBookingsPage />}
+				{activeTab === "bookings" && (
+					<MyBookingsPage
+						myBookings={myBookings}
+						refreshBookings={refreshBookings}
+					/>
+				)}
 			</main>
 		</div>
 	);

@@ -1,6 +1,6 @@
 import "./BookingModal.css";
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const BookingModal = ({
 	desk,
@@ -11,10 +11,17 @@ const BookingModal = ({
 	currentUserId,
 	users,
 	error,
+	selectedDate: initialSelectedDate,
 }) => {
 	const [selectedDate, setSelectedDate] = useState(
-		new Date().toISOString().split("T")[0],
+		initialSelectedDate || new Date().toISOString().split("T")[0],
 	);
+
+	useEffect(() => {
+		if (initialSelectedDate) {
+			setSelectedDate(initialSelectedDate);
+		}
+	}, [initialSelectedDate]);
 
 	if (!desk) return null;
 
@@ -124,6 +131,7 @@ BookingModal.propTypes = {
 		}),
 	).isRequired,
 	error: PropTypes.string,
+	selectedDate: PropTypes.string,
 };
 
 export default BookingModal;

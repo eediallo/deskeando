@@ -1,41 +1,25 @@
 import PropTypes from "prop-types";
-import { useEffect, useState, useContext } from "react";
+import { useState, useContext } from "react";
 
 import { AppContext } from "../context/AppContext";
-import { getMyBookings, deleteBooking } from "../services/apiService";
+import { deleteBooking } from "../services/apiService";
 
 import BookingModal from "./BookingModal";
 import "./MyBookings.css";
 
-const MyBookings = ({ refreshTrigger }) => {
-	const [upcoming, setUpcoming] = useState([]);
-	const [past, setPast] = useState([]);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState(null);
-	const [tab, setTab] = useState("upcoming");
+const sortByDateAsc = (a, b) => new Date(a.from_date) - new Date(b.from_date);
 
+const MyBookings = ({ myBookings, refreshBookings }) => {
+	const [tab, setTab] = useState("upcoming");
 	const [selectedBooking, setSelectedBooking] = useState(null);
 	const [modalVisible, setModalVisible] = useState(false);
 
-	const { users, currentUser, notifyBookingChange } = useContext(AppContext);
+	const { users, currentUser, loading, error } = useContext(AppContext);
 
-	useEffect(() => {
-		setLoading(true);
-		getMyBookings()
-			.then((data) => {
-				setUpcoming(Array.isArray(data.upcoming) ? data.upcoming : []);
-				setPast(Array.isArray(data.past) ? data.past : []);
-				setError(null);
-			})
-			.catch((err) => setError(err))
-			.finally(() => setLoading(false));
-	}, [refreshTrigger]);
-
-	const sortByDateAsc = (a, b) => new Date(a.from_date) - new Date(b.from_date);
 	const displayedBookings =
 		tab === "upcoming"
-			? [...upcoming].sort(sortByDateAsc)
-			: [...past].sort(sortByDateAsc);
+			? [...(myBookings?.upcoming || [])].sort(sortByDateAsc)
+			: [...(myBookings?.past || [])].sort(sortByDateAsc);
 
 	const openModal = (booking) => {
 		setSelectedBooking(booking);
@@ -50,8 +34,8 @@ const MyBookings = ({ refreshTrigger }) => {
 	const handleCancel = async (bookingId) => {
 		try {
 			await deleteBooking(bookingId);
-			setUpcoming((prev) => prev.filter((b) => b.booking_id !== bookingId));
-			notifyBookingChange();
+			// setUpcoming((prev) => prev.filter((b) => b.booking_id !== bookingId));
+			await refreshBookings();
 			closeModal();
 		} catch (err) {
 			alert("Failed to cancel booking: " + err.message);
@@ -119,7 +103,15 @@ const MyBookings = ({ refreshTrigger }) => {
 };
 
 MyBookings.propTypes = {
-	refreshTrigger: PropTypes.number,
+	myBookings: PropTypes.shape({
+		upcoming: PropTypes.array,
+		past: PropTypes.array,
+	}).isRequired,
+	refreshBookings: PropTypes.func.isRequired,
+	currentUser: PropTypes.object,
+	users: PropTypes.array,
+	loading: PropTypes.bool,
+	error: PropTypes.object,
 };
 
 export default MyBookings;

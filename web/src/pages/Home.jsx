@@ -9,6 +9,7 @@ import {
 	deleteBooking,
 	getBookingsFiltered,
 } from "../services/apiService";
+import "./Home.css";
 
 const Home = () => {
 	const { desks, users, loading, error, currentUser, notifyBookingChange } =
@@ -19,22 +20,24 @@ const Home = () => {
 	const [selectedBooking, setSelectedBooking] = useState(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [modalError, setModalError] = useState("");
+	const [selectedDate, setSelectedDate] = useState(
+		new Date().toISOString().split("T")[0],
+	);
 
 	const currentUserId = currentUser ? String(currentUser.id) : null;
 
 	useEffect(() => {
 		if (!currentUserId) return;
-		const today = new Date().toISOString().split("T")[0];
-		getBookingsFiltered({ from: today, to: today })
+		getBookingsFiltered({ from: selectedDate, to: selectedDate })
 			.then(setBookings)
 			.catch((err) => alert(err.message || "Failed to fetch bookings"));
 		const intervalId = setInterval(() => {
-			getBookingsFiltered({ from: today, to: today })
+			getBookingsFiltered({ from: selectedDate, to: selectedDate })
 				.then(setBookings)
 				.catch(() => {});
 		}, 5000);
 		return () => clearInterval(intervalId);
-	}, [currentUserId]);
+	}, [currentUserId, selectedDate]);
 
 	const handleDeskClick = (desk, booking) => {
 		setSelectedDesk(desk);
@@ -81,6 +84,28 @@ const Home = () => {
 		}
 	};
 
+	const goToPreviousDay = () => {
+		const date = new Date(selectedDate);
+		date.setDate(date.getDate() - 1);
+		setSelectedDate(date.toISOString().split("T")[0]);
+	};
+
+	const goToNextDay = () => {
+		const date = new Date(selectedDate);
+		date.setDate(date.getDate() + 1);
+		setSelectedDate(date.toISOString().split("T")[0]);
+	};
+
+	const formatDate = (dateString) => {
+		const date = new Date(dateString);
+		return date.toLocaleDateString("en-US", {
+			weekday: "long",
+			year: "numeric",
+			month: "long",
+			day: "numeric",
+		});
+	};
+
 	if (loading) return <p>Loading...</p>;
 	if (error) return <p>Error: {error.message}</p>;
 	if (!currentUserId) return <p>Please log in to book a desk.</p>;
@@ -91,11 +116,26 @@ const Home = () => {
 				<h1>Office Available Desks</h1>
 				<DeskStatusLegend />
 
+				<div className="date-navigation">
+					<button onClick={goToPreviousDay} className="nav-button">
+						← Previous
+					</button>
+
+					<div className="date-display">
+						<h3>{formatDate(selectedDate)}</h3>
+					</div>
+
+					<button onClick={goToNextDay} className="nav-button">
+						Next →
+					</button>
+				</div>
+
 				<DeskGrid
 					desks={desks}
 					bookings={bookings}
 					onDeskClick={handleDeskClick}
 					currentUserId={currentUserId}
+					selectedDate={selectedDate}
 				/>
 				{isModalOpen && (
 					<BookingModal
@@ -107,6 +147,7 @@ const Home = () => {
 						currentUserId={currentUserId}
 						users={users}
 						error={modalError}
+						selectedDate={selectedDate}
 					/>
 				)}
 			</div>

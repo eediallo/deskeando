@@ -27,7 +27,7 @@ const BookingModal = ({
 			const today = new Date().toISOString().split("T")[0];
 			return (
 				<>
-					<h2>Book Desk {desk.name}</h2>
+					<h2>Book {desk.name}</h2>
 					<label htmlFor="booking-date">Choose Date: </label>
 					<input
 						type="date"

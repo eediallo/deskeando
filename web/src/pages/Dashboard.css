@@ -1,7 +1,6 @@
 .dashboard {
 	display: flex;
 	min-height: 100vh;
-	background: linear-gradient(120deg, #f8fafd 0%, #f7f0ff 100%);
 	margin: 0;
 	padding: 0;
 }
@@ -76,10 +75,8 @@
 
 .dashboard-main {
 	flex: 1;
-	margin-left: 100px;
+	margin-left: 260px;
 	padding: 2rem 3rem;
-	background: linear-gradient(120deg, #f8fafd 0%, #f7f0ff 100%);
-	overflow-y: auto;
 }
 
 @media (max-width: 1200px) {

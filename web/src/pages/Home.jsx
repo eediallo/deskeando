@@ -12,8 +12,16 @@ import {
 } from "../services/apiService";
 import "./Home.css";
 
-const Home = ({ myBookings, refreshBookings }) => {
-	const { desks, users, loading, error, currentUser } = useAppContext();
+const Home = () => {
+	const {
+		desks,
+		users,
+		loading,
+		error,
+		currentUser,
+		myBookings,
+		setMyBookings,
+	} = useAppContext();
 
 	const [bookings, setBookings] = useState([]);
 	const [selectedDesk, setSelectedDesk] = useState(null);
@@ -62,7 +70,10 @@ const Home = ({ myBookings, refreshBookings }) => {
 			const newBooking = await createBooking(bookingData);
 			setBookings([...bookings, newBooking]);
 
-			await refreshBookings();
+			setMyBookings({
+				...myBookings,
+				upcoming: [...myBookings.upcoming, newBooking],
+			});
 
 			handleCloseModal();
 		} catch (err) {
@@ -74,7 +85,18 @@ const Home = ({ myBookings, refreshBookings }) => {
 		try {
 			await deleteBooking(bookingId);
 			setBookings(bookings.filter((b) => b.booking_id !== bookingId));
-			await refreshBookings();
+			setMyBookings((prev) => {
+				const updatedUpcoming = prev.upcoming.filter(
+					(b) => b.booking_id !== bookingId,
+				);
+
+				const updatedPast = prev.past.filter((b) => b.booking_id !== bookingId);
+
+				return {
+					upcoming: updatedUpcoming,
+					past: updatedPast,
+				};
+			});
 			handleCloseModal();
 		} catch (err) {
 			setModalError(err.message || "Failed to cancel booking");

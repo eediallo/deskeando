@@ -8,7 +8,8 @@
 	"scripts": {
 		"dev": "node --inspect --watch --watch-path . server.js",
 		"migration": "node ./migrations/migrate.js",
-		"migration:create": "node-pg-migrate create --template-file-name ./migrations/template.js"
+		"migration:create": "node-pg-migrate create --template-file-name ./migrations/template.js",
+		"test": "vitest --run"
 	},
 	"dependencies": {
 		"bcryptjs": "^3.0.2",
@@ -21,6 +22,7 @@
 	},
 	"devDependencies": {
 		"@testcontainers/postgresql": "^11.1.0",
-		"supertest": "^7.1.1"
+		"supertest": "^7.1.4",
+		"vitest": "^3.2.2"
 	}
 }

@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import UserMenu from "../components/UserMenu";
 import { useAppContext } from "../context/useAppContext";
-import { getMyBookings } from "../services/apiService";
 
 import CalendarView from "./CalendarView";
 import Home from "./Home";
@@ -13,18 +12,6 @@ const Dashboard = () => {
 	const { currentUser, logout, loading, error } = useAppContext();
 	const [activeTab, setActiveTab] = useState("dashboard");
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-	const [myBookings, setMyBookings] = useState({ upcoming: [], past: [] });
-
-	const refreshBookings = async () => {
-		// setLoading(true);
-		const data = await getMyBookings();
-		setMyBookings(data);
-		// setError(null);
-	};
-
-	useEffect(() => {
-		if (currentUser) refreshBookings();
-	}, [currentUser]);
 
 	return (
 		<div className="dashboard">
@@ -94,16 +81,9 @@ const Dashboard = () => {
 			</nav>
 
 			<main className="dashboard-main">
-				{activeTab === "dashboard" && (
-					<Home myBookings={myBookings} refreshBookings={refreshBookings} />
-				)}
+				{activeTab === "dashboard" && <Home />}
 				{activeTab === "calendar" && <CalendarView />}
-				{activeTab === "bookings" && (
-					<MyBookingsPage
-						myBookings={myBookings}
-						refreshBookings={refreshBookings}
-					/>
-				)}
+				{activeTab === "bookings" && <MyBookingsPage />}
 			</main>
 		</div>
 	);

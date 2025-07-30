@@ -11,6 +11,7 @@ import {
 	getBookingById,
 	getFilteredBookingsService,
 	getBookingsForUserSplit,
+	getBookingsbyDeskId,
 } from "./bookingService.js";
 
 const router = Router();
@@ -74,3 +75,17 @@ router.get("/my", authenticate, async (req, res) => {
 });
 
 export default router;
+
+// Get bookings for a specific desk by Id
+router.get("/desk/:deskId", authenticate, async (req, res) => {
+	const { deskId } = req.params;
+
+	if (!deskId) {
+		return res
+			.status(StatusCodes.BAD_REQUEST)
+			.json({ error: "Missing desk id" });
+	}
+
+	const bookings = await getBookingsbyDeskId(deskId);
+	res.json(bookings);
+});

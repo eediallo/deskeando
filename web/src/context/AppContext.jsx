@@ -6,6 +6,7 @@ import {
 	getDesks,
 	getCurrentUser,
 	logoutUser,
+	getMyBookings,
 } from "../services/apiService";
 
 const AppContext = createContext();
@@ -18,10 +19,7 @@ export const AppProvider = ({ children }) => {
 	const [error, setError] = useState(null);
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const [currentUser, setCurrentUser] = useState(null);
-	const [bookingChangeCounter, setBookingChangeCounter] = useState(0);
-
-	// Called to notify other views about booking changes
-	const notifyBookingChange = () => setBookingChangeCounter((prev) => prev + 1);
+	const [myBookings, setMyBookings] = useState({ upcoming: [], past: [] });
 
 	// Restore session and current user on mount
 	useEffect(() => {
@@ -92,6 +90,18 @@ export const AppProvider = ({ children }) => {
 		fetchData();
 	}, [isAuthenticated, currentUser]);
 
+	// Load current user bookings
+	useEffect(() => {
+		const refreshBookings = async () => {
+			setLoading(true);
+			const data = await getMyBookings();
+			setMyBookings(data);
+			setError(null);
+		};
+
+		if (currentUser) refreshBookings();
+	}, [currentUser]);
+
 	return (
 		<AppContext.Provider
 			value={{
@@ -104,8 +114,8 @@ export const AppProvider = ({ children }) => {
 				currentUser,
 				setCurrentUser,
 				logout,
-				bookingChangeCounter,
-				notifyBookingChange,
+				myBookings,
+				setMyBookings,
 			}}
 		>
 			{children}

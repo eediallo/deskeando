@@ -11,6 +11,7 @@ import {
 	createBooking,
 	getFilteredBookings,
 	getBookingsForUser,
+	getBookingsbyDesk,
 } from "./bookingRepository.js";
 
 export async function getAllBookings() {
@@ -71,4 +72,15 @@ export async function getBookingsForUserSplit(userId) {
 		}
 	}
 	return { past, upcoming };
+}
+
+export async function getBookingsbyDeskId(deskId) {
+	const bookings = await getBookingsbyDesk(deskId);
+	if (!bookings) {
+		throw new ApiError(
+			"Failed to fetch bookings",
+			StatusCodes.INTERNAL_SERVER_ERROR,
+		);
+	}
+	return bookings;
 }

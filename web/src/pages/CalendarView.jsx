@@ -5,7 +5,7 @@ import { getBookingsFiltered } from "../services/apiService";
 import "./CalendarView.css";
 
 const CalendarView = () => {
-	const { desks, users, bookingChangeCounter } = useAppContext();
+	const { desks, users } = useAppContext();
 	const [currentDate, setCurrentDate] = useState(new Date());
 	const [bookings, setBookings] = useState([]);
 	const [loading, setLoading] = useState(true);
@@ -39,7 +39,7 @@ const CalendarView = () => {
 			})
 			.catch((err) => setError(err))
 			.finally(() => setLoading(false));
-	}, [currentDate, bookingChangeCounter]);
+	}, [currentDate, weekDays]);
 
 	const findBooking = (deskId, date) => {
 		return bookings.find((booking) => {

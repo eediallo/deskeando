@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 
 import MyBookings from "../components/MyBookings";
 
-const MyBookingsPage = ({ myBookings, refreshBookings }) => {
+const MyBookingsPage = () => {
 	return (
 		<div className="card">
 			<h2>My Bookings</h2>
@@ -11,7 +11,7 @@ const MyBookingsPage = ({ myBookings, refreshBookings }) => {
 				reservations.
 			</p>
 			<hr />
-			<MyBookings myBookings={myBookings} refreshBookings={refreshBookings} />
+			<MyBookings />
 		</div>
 	);
 };

@@ -23,6 +23,7 @@ const BookingModal = ({
 	);
 	const [blockedDates, setBlockedDates] = useState([]);
 
+	// Fetch desk bookings and form blockedDates
 	useEffect(() => {
 		const fetchBlockedDates = async () => {
 			if (!desk) return;
@@ -63,17 +64,19 @@ const BookingModal = ({
 		if (!booking) {
 			return (
 				<>
-					<h2>Book {desk.name}</h2>
-					<label htmlFor="booking-date">Choose Date: </label>
-					<DatePicker
-						selected={selectedDate}
-						onChange={(date) => setSelectedDate(date)}
-						minDate={new Date()}
-						excludeDates={blockedDates}
-						className="booking-date"
-						id="booking-date"
-						name="booking-date"
-					/>
+					<div className="form-group">
+						<h2>Book Desk {desk.name}</h2>
+						<label htmlFor="booking-date">Choose Date: </label>
+						<DatePicker
+							selected={selectedDate}
+							onChange={(date) => setSelectedDate(date)}
+							minDate={new Date()}
+							excludeDates={blockedDates}
+							className="booking-date"
+							id="booking-date"
+							name="booking-date"
+						/>
+					</div>
 					<button onClick={() => onBook(desk.id, selectedDate)}>
 						Book this desk
 					</button>

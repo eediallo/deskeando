@@ -139,3 +139,20 @@ export async function getMyBookings() {
 	}
 	return response.json();
 }
+
+export async function getBookingsByDeskId(deskId) {
+	const response = await fetch(`${API_BASE_URL}/bookings/desk/${deskId}`, {
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		credentials: "include",
+	});
+
+	if (!response.ok) {
+		throw new Error("Failed to fetch bookings by desk ID");
+	}
+
+	const data = await response.json();
+	return data;
+}

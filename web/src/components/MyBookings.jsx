@@ -9,12 +9,14 @@ import "./MyBookings.css";
 
 const sortByDateAsc = (a, b) => new Date(a.from_date) - new Date(b.from_date);
 
-const MyBookings = ({ myBookings, refreshBookings }) => {
+const MyBookings = () => {
 	const [tab, setTab] = useState("upcoming");
 	const [selectedBooking, setSelectedBooking] = useState(null);
 	const [modalVisible, setModalVisible] = useState(false);
+	const [selectedDate] = useState(new Date().toISOString().split("T")[0]);
 
-	const { users, currentUser, loading, error } = useContext(AppContext);
+	const { users, currentUser, loading, error, myBookings, setMyBookings } =
+		useContext(AppContext);
 
 	const displayedBookings =
 		tab === "upcoming"
@@ -34,8 +36,18 @@ const MyBookings = ({ myBookings, refreshBookings }) => {
 	const handleCancel = async (bookingId) => {
 		try {
 			await deleteBooking(bookingId);
-			// setUpcoming((prev) => prev.filter((b) => b.booking_id !== bookingId));
-			await refreshBookings();
+			setMyBookings((prev) => {
+				const updatedUpcoming = prev.upcoming.filter(
+					(b) => b.booking_id !== bookingId,
+				);
+
+				const updatedPast = prev.past.filter((b) => b.booking_id !== bookingId);
+
+				return {
+					upcoming: updatedUpcoming,
+					past: updatedPast,
+				};
+			});
 			closeModal();
 		} catch (err) {
 			alert("Failed to cancel booking: " + err.message);
@@ -96,6 +108,10 @@ const MyBookings = ({ myBookings, refreshBookings }) => {
 					currentUserId={currentUser?.id}
 					users={users}
 					error={error?.message}
+					selectedDate={selectedDate}
+					myBookingsDates={myBookings.upcoming.map(
+						(booking) => new Date(booking.from_date),
+					)}
 				/>
 			)}
 		</div>

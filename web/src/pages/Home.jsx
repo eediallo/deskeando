@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 
 import BookingModal from "../components/BookingModal";
@@ -11,9 +12,8 @@ import {
 } from "../services/apiService";
 import "./Home.css";
 
-const Home = () => {
-	const { desks, users, loading, error, currentUser, notifyBookingChange } =
-		useAppContext();
+const Home = ({ myBookings, refreshBookings }) => {
+	const { desks, users, loading, error, currentUser } = useAppContext();
 
 	const [bookings, setBookings] = useState([]);
 	const [selectedDesk, setSelectedDesk] = useState(null);
@@ -23,7 +23,6 @@ const Home = () => {
 	const [selectedDate, setSelectedDate] = useState(
 		new Date().toISOString().split("T")[0],
 	);
-
 	const currentUserId = currentUser ? String(currentUser.id) : null;
 
 	useEffect(() => {
@@ -63,7 +62,7 @@ const Home = () => {
 			const newBooking = await createBooking(bookingData);
 			setBookings([...bookings, newBooking]);
 
-			notifyBookingChange(); // Trigger calendar update
+			await refreshBookings();
 
 			handleCloseModal();
 		} catch (err) {
@@ -75,9 +74,7 @@ const Home = () => {
 		try {
 			await deleteBooking(bookingId);
 			setBookings(bookings.filter((b) => b.booking_id !== bookingId));
-
-			notifyBookingChange(); // Trigger calendar update
-
+			await refreshBookings();
 			handleCloseModal();
 		} catch (err) {
 			setModalError(err.message || "Failed to cancel booking");
@@ -148,11 +145,25 @@ const Home = () => {
 						users={users}
 						error={modalError}
 						selectedDate={selectedDate}
+						myBookingsDates={myBookings.upcoming.map(
+							(booking) => new Date(booking.from_date),
+						)}
 					/>
 				)}
 			</div>
 		</div>
 	);
+};
+
+Home.propTypes = {
+	myBookings: PropTypes.shape({
+		upcoming: PropTypes.arrayOf(
+			PropTypes.shape({
+				from_date: PropTypes.string.isRequired,
+			}),
+		).isRequired,
+	}).isRequired,
+	refreshBookings: PropTypes.func.isRequired,
 };
 
 export default Home;

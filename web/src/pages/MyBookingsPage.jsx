@@ -1,6 +1,8 @@
+import PropTypes from "prop-types";
+
 import MyBookings from "../components/MyBookings";
 
-const MyBookingsPage = () => {
+const MyBookingsPage = ({ myBookings, refreshBookings }) => {
 	return (
 		<div className="card">
 			<h2>My Bookings</h2>
@@ -9,9 +11,14 @@ const MyBookingsPage = () => {
 				reservations.
 			</p>
 			<hr />
-			<MyBookings />
+			<MyBookings myBookings={myBookings} refreshBookings={refreshBookings} />
 		</div>
 	);
+};
+
+MyBookingsPage.propTypes = {
+	myBookings: PropTypes.object.isRequired,
+	refreshBookings: PropTypes.func.isRequired,
 };
 
 export default MyBookingsPage;

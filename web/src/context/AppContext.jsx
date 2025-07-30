@@ -18,10 +18,6 @@ export const AppProvider = ({ children }) => {
 	const [error, setError] = useState(null);
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const [currentUser, setCurrentUser] = useState(null);
-	const [bookingChangeCounter, setBookingChangeCounter] = useState(0);
-
-	// Called to notify other views about booking changes
-	const notifyBookingChange = () => setBookingChangeCounter((prev) => prev + 1);
 
 	// Restore session and current user on mount
 	useEffect(() => {
@@ -104,8 +100,6 @@ export const AppProvider = ({ children }) => {
 				currentUser,
 				setCurrentUser,
 				logout,
-				bookingChangeCounter,
-				notifyBookingChange,
 			}}
 		>
 			{children}

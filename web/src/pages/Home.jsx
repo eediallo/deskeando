@@ -117,7 +117,7 @@ const Home = () => {
 
 	const formatDate = (dateString) => {
 		const date = new Date(dateString);
-		return date.toLocaleDateString("en-US", {
+		return date.toLocaleDateString("en-GB", {
 			weekday: "long",
 			year: "numeric",
 			month: "long",
@@ -137,7 +137,7 @@ const Home = () => {
 
 				<div className="date-navigation">
 					<button onClick={goToPreviousDay} className="nav-button">
-						← Previous
+						{"<"} Previous
 					</button>
 
 					<div className="date-display">
@@ -145,7 +145,7 @@ const Home = () => {
 					</div>
 
 					<button onClick={goToNextDay} className="nav-button">
-						Next →
+						Next {">"}
 					</button>
 				</div>
 

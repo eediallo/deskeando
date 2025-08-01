@@ -72,6 +72,7 @@ const BookingModal = ({
 							onChange={(date) => setSelectedDate(date)}
 							minDate={new Date()}
 							excludeDates={blockedDates}
+							dateFormat="dd/MM/yyyy"
 							className="booking-date"
 							id="booking-date"
 							name="booking-date"

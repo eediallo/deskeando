@@ -83,7 +83,10 @@ const MyBookings = () => {
 						<li key={booking.booking_id}>
 							Desk: <strong>{booking.desk_name || booking.desk_id}</strong>{" "}
 							<br />
-							Date: {new Date(booking.from_date).toLocaleDateString()} <br />
+							Date: {new Date(booking.from_date).toLocaleDateString(
+								"en-GB",
+							)}{" "}
+							<br />
 							{tab === "upcoming" && (
 								<button onClick={() => openModal(booking)}>
 									Cancel Booking

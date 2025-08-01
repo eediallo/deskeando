@@ -80,7 +80,7 @@ const CalendarView = () => {
 		<div className="calendar-view">
 			<div className="calendar-header">
 				<button onClick={handlePrevWeek}>&lt; Prev Week</button>
-				<h2>Week of {weekDays[0].toLocaleDateString()}</h2>
+				<h2>Week of {weekDays[0].toLocaleDateString("en-GB")}</h2>
 				<button onClick={handleNextWeek}>Next Week &gt;</button>
 			</div>
 			<table className="calendar-table">
@@ -88,7 +88,16 @@ const CalendarView = () => {
 					<tr>
 						<th>Desk</th>
 						{weekDays.map((day) => (
-							<th key={day.toISOString()}>{day.toLocaleDateString()}</th>
+							<th key={day.toISOString()}>
+								<div className="day-header">
+									<div className="day-name">
+										{day.toLocaleDateString("en-GB", { weekday: "short" })}
+									</div>
+									<div className="day-date">
+										{day.toLocaleDateString("en-GB")}
+									</div>
+								</div>
+							</th>
 						))}
 					</tr>
 				</thead>

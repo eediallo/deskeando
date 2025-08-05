@@ -1,111 +1,190 @@
-# Starter Kit v2
+<!-- PROJECT LOGO -->
+<div align="center">
+  <h1 align="center"> HaveALook — Desk Booking Application</h1>
+  <p align="center">
+    A web application to book desks in advance.
+    <br />
+   
+  </p>
+</div>
 
-- [x] [Node] LTS support (verified working on 20.x LTS release)
-- [x] [Express] server
-- [x] [Postgres] database with [`pg`][node-postgres]
-- [x] Logging with [Winston] and [Morgan]
-- [x] [React] client with [Vite]
-- [x] Client-side routing with [React Router]
-- [x] Linting with [ESLint] and [Prettier]
-- [x] Unit and integration testing with [Vitest] (with [SuperTest] and [TestContainers])
-- [x] E2E testing with [Playwright]
-- [x] Dev mode (watch modes for client and server, proxy to avoid CORS issues)
-- [x] Production build (single deployment artifact)
-- [x] [GitHub Actions] pipeline
-- [x] [Coolify], [Google App Engine], [Heroku], [Render] or [Vercel] deployment
-- [x] [Docker] build
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about">About</a>
+      <ul>
+        <li><a href="#key-features">Key Features</a></li>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+  </ol>
+</details>
 
-## Setup
+<!-- ABOUT THE PROJECT -->
 
-> **Note** if you have _any problems_ setting up the starter kit, see the [wiki] and, if still not solved, post to
-> [`#cyf-full-stack-starter-kit` in Slack][2].
+## About
 
-Pick one member of the team to own the repository and pipeline. That person should do the following:
+This project is a flexible web application built to help manage shared office space efficiently. It solves a key problem: "Who works where, and when?"
 
-1.  Click the "Use this template" button above (see [GitHub's docs][1]) to create your team repository and name it something appropriate for your project.
-    - Your repo should say _"generated from"_, **not** _"forked from"_, _"CodeYourFuture/cyf-final-project-starter-kit"_ at the top
+### Key Features
 
-2.  Make sure all of the project team are [collaborators] on the repository.
+- **Calendar View** — Navigate to upcoming weeks and see bookings at a glance
+- **Log in/Registretion** — Each user has to register
+- **Desk Availability Dashboard** — See which desks are free and which are booked
+- **Interactive Floorplan (SVG)** — Select desks visually
+- **Team Bookings** — Book for yourself a desk
+- **Cancellations** — Cancel your own bookings
 
-### Deploy to Coolify
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-This repo will work with the [Nixpack Node provider's][nixpacks-node] defaults, so deployment should be straightforward.
+### Built With
 
-1. Create a new project
+<!-- Frontend -->
 
-2. In the default "production" environment, create a Postgresql database
-   - Choose the default type
-   - Once it has started up, copy the "Postgres URL (internal)"
+[![React][React.js]][React-url]
+[![React Router][ReactRouter]][ReactRouter-url]
+[![Vite][Vite.js]][Vite-url]
 
-3. Also in the default "production" environment, create a "Git Based > Public Repository" resource
-   - Choose your repository URL
-   - Under "Environment Variables", set `PGSSLMODE` to `disable` and `DATABASE_URL` to the URL you copied above
-   - Under "Healthcheck", check "Enabled", set the Path to `/healthz` and the Return Code to 301
-   - Under "Webhooks", copy the "Manual Git Webhooks > GitHub" URL then follow the link to "Webhook configuration on GitHub" to add this to your repo
-     - Use the command `python3 -c 'import secrets;print(secrets.token_hex(16))'` to generate a good secret
+<!-- Backend -->
 
-### Deploy to Render
+[![Node.js][Node.js]][Node-url]
+[![Express][Express.js]][Express-url]
+[![PostgreSQL][Postgres]][Postgres-url]
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
+<!-- Logging -->
 
-1.  In your repo, click the "Deploy to Render" button in the relevant section of the README and log in using GitHub when prompted.
-2.  Fill in a service group name for your application and then click "Apply".
-3.  Once it has deployed successfully, click the "managed resources" link to view the application details.
+[![Winston][Winston]][Winston-url]
+[![Morgan][Morgan]][Morgan-url]
 
-## Scripts
+<!-- Code Quality -->
 
-Various scripts are provided in the package file, but many are helpers for other scripts; here are the ones you'll
-commonly use:
+[![ESLint][ESLint]][ESLint-url]
+[![Prettier][Prettier]][Prettier-url]
 
-- `dev`: starts the frontend and backend in dev mode, with file watching (note that the backend runs on port 3100, and the frontend is proxied to it).
-- `e2e`: builds and starts the app in production mode and runs the Playwright tests against it.
-  - `e2e:dev`: builds and starts the app in dev mode and runs the Playwright tests against it.
-- `lint`: runs ESLint and Prettier against all the relevant files in the project.
-- `serve`: builds and starts the app in production mode locally.
-- `ship`: runs `lint`, then `test`, then `e2e`; ideal before a `git push`.
-- `test`: runs the unit and integration tests.
-  - `test:cover`: runs the tests and outputs coverage data.
+<!-- Testing -->
 
-### Security
+[![Vitest][Vitest]][Vitest-url]
+[![TestContainers][TestContainers]][TestContainers-url]
+[![Playwright][Playwright]][Playwright-url]
 
-If the project handles **any kind of** Personally Identifiable Information (PII) then make sure the following
-principles are followed:
+<!-- DevOps -->
 
-- Only collect **strictly necessary** PII;
-- Access to PII should be as restricted as possible;
-- Access to PII should only be possible after authentication. Authentication **must be done** via GitHub. **Ad hoc
-  authentication solutions are not allowed**;
-- Admins must be able to control who has access to the platform and at which levels using only GitHub groups;
-- There must be an audit mechanism in place. It is required by law to know who accessed what and when;
-- Code must be reviewed by senior developers before being pushed to production;
-- APIs must be secure. Make sure we are not handling security on the frontend.
+[![Docker][Docker]][Docker-url]
+[![GitHub Actions][GitHubActions]][GitHubActions-url]
+[![Coolify][Coolify]][Coolify-url]
 
-[1]: https://docs.github.com/en/free-pro-team@latest/github/creating-cloning-and-archiving-repositories/creating-a-repository-from-a-template#creating-a-repository-from-a-template
-[2]: https://codeyourfuture.slack.com/archives/C021ATWS9A5
-[collaborators]: https://help.github.com/en/articles/inviting-collaborators-to-a-personal-repository
-[Coolify]: https://coolify.io/
-[Docker]: https://www.docker.com
-[ESLint]: https://eslint.org/
-[Express]: https://expressjs.com/
-[GitHub Actions]: https://github.com/features/actions
-[Google App Engine]: https://cloud.google.com/appengine/?hl=en
-[Heroku]: https://www.heroku.com/
-[Morgan]: https://github.com/expressjs/morgan
-[nixpacks-node]: https://nixpacks.com/docs/providers/node
-[Node]: https://nodejs.org/en/
-[node-postgres]: https://node-postgres.com/
-[node-test]: https://nodejs.org/api/test.html
-[Playwright]: https://playwright.dev/
-[Postgres]: https://www.postgresql.org/
-[Prettier]: https://prettier.io/
-[pull request]: https://help.github.com/en/articles/about-pull-requests
-[React]: https://reactjs.org/
-[React Router]: https://reactrouter.com/en/main
-[Render]: https://render.com/
-[SuperTest]: https://github.com/visionmedia/supertest
-[TestContainers]: https://testcontainers.com/
-[Vercel]: https://vercel.com/
-[Vite]: https://vitejs.dev/
-[Vitest]: https://vitest.dev/
-[wiki]: https://github.com/textbook/starter-kit/wiki
-[Winston]: https://github.com/winstonjs/winston
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- GETTING STARTED -->
+
+## Getting Started
+
+### Prerequisites
+
+Ensure you have the latest version of **npm** installed:
+
+- npm
+  ```sh
+  npm install npm@latest -g
+  ```
+
+### Installation
+
+Follow these steps to set up and run the project locally:
+
+1. Clone the repo
+   ```sh
+   git clone https://github.com/eediallo/deskeando.git
+   ```
+2. Install NPM packages in web and api directories
+   ```sh
+   npm install
+   ```
+3. Configure Environment Variables
+
+   Create a `.env` file with the following variables:
+
+   ```env
+   DATABASE_URL=your_postgresql_database_url
+   JWT_SECRET=your_jwt_secret
+   PORT=3000
+   ```
+
+4. Start the Development Server
+
+   To start both the frontend and backend concurrently in development mode, run:
+
+   ```sh
+   npm run dev
+   ```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- CONTRIBUTING -->
+
+## Contributing
+
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are \*greatly appreciated\*\*.
+
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! Thanks again!
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+<!-- LICENSE -->
+
+## License
+
+See `LICENSE.txt` for more information.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- MARKDOWN LINKS & IMAGES -->
+
+[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
+[React-url]: https://reactjs.org/
+[Node.js]: https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white
+[Node-url]: https://nodejs.org/
+[Express.js]: https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white
+[Express-url]: https://expressjs.com/
+[Postgres]: https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white
+[Postgres-url]: https://www.postgresql.org/
+[Vite.js]: https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white
+[Vite-url]: https://vitejs.dev/
+[ReactRouter]: https://img.shields.io/badge/React%20Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white
+[ReactRouter-url]: https://reactrouter.com/
+[Winston]: https://img.shields.io/badge/Winston-3C3C3C?style=for-the-badge
+[Winston-url]: https://github.com/winstonjs/winston
+[Morgan]: https://img.shields.io/badge/Morgan-000000?style=for-the-badge
+[Morgan-url]: https://github.com/expressjs/morgan
+[ESLint]: https://img.shields.io/badge/ESLint-4B32C3?style=for-the-badge&logo=eslint&logoColor=white
+[ESLint-url]: https://eslint.org/
+[Prettier]: https://img.shields.io/badge/Prettier-F7B93E?style=for-the-badge&logo=prettier&logoColor=black
+[Prettier-url]: https://prettier.io/
+[Vitest]: https://img.shields.io/badge/Vitest-6E9F18?style=for-the-badge&logo=vitest&logoColor=white
+[Vitest-url]: https://vitest.dev/
+[TestContainers]: https://img.shields.io/badge/TestContainers-0db7ed?style=for-the-badge&logo=docker&logoColor=white
+[TestContainers-url]: https://www.testcontainers.org/
+[Playwright]: https://img.shields.io/badge/Playwright-45ba63?style=for-the-badge&logo=playwright&logoColor=white
+[Playwright-url]: https://playwright.dev/
+[Docker]: https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white
+[Docker-url]: https://www.docker.com/
+[GitHubActions]: https://img.shields.io/badge/GitHub%20Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white
+[GitHubActions-url]: https://github.com/features/actions
+[Coolify]: https://img.shields.io/badge/Coolify-333333?style=for-the-badge
+[Coolify-url]: https://coolify.io/

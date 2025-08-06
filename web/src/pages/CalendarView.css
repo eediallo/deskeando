@@ -53,7 +53,15 @@
 
 @media (max-width: 768px) {
 	.calendar-view h2 {
-		font-size: 1rem;
+		font-size: 0.9rem;
 		text-align: center;
+	}
+
+	.calendar-header button {
+		font-size: 0.7rem;
+	}
+
+	.calendar-view {
+		margin-top: 50px;
 	}
 }

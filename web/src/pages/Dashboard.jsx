@@ -9,12 +9,14 @@ import MyBookingsPage from "./MyBookingsPage";
 import "./Dashboard.css";
 
 const Dashboard = () => {
-	const { currentUser, logout } = useAppContext();
+	const { currentUser, logout, loading, error } = useAppContext();
 	const [activeTab, setActiveTab] = useState("dashboard");
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
 	return (
 		<div className="dashboard">
+			{loading && <p>Loading...</p>}
+			{error && <p>Error: {error.message}</p>}
 			<div
 				className="menu-icon"
 				onClick={() => setIsSidebarOpen(!isSidebarOpen)}

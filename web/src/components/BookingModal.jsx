@@ -1,7 +1,11 @@
 import "./BookingModal.css";
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
+import DatePicker from "react-datepicker";
 
+import { getBookingsByDeskId } from "../services/apiService";
+
+import "react-datepicker/dist/react-datepicker.css";
 const BookingModal = ({
 	desk,
 	booking,
@@ -12,10 +16,37 @@ const BookingModal = ({
 	users,
 	error,
 	selectedDate: initialSelectedDate,
+	myBookingsDates,
 }) => {
 	const [selectedDate, setSelectedDate] = useState(
 		initialSelectedDate || new Date().toISOString().split("T")[0],
 	);
+	const [blockedDates, setBlockedDates] = useState([]);
+
+	// Fetch desk bookings and form blockedDates
+	useEffect(() => {
+		const fetchBlockedDates = async () => {
+			if (!desk) return;
+
+			try {
+				const deskBookings = await getBookingsByDeskId(desk.id);
+				const deskBlockedDates = deskBookings.map(
+					(booking) => new Date(booking.from_date),
+				);
+
+				const all = [...myBookingsDates, ...deskBlockedDates];
+				const unique = Array.from(
+					new Set(all.map((d) => d.toDateString())),
+				).map((str) => new Date(str));
+
+				setBlockedDates(unique);
+			} catch (err) {
+				throw new Error(`Error fetching desk bookings: ${err}`, err);
+			}
+		};
+
+		fetchBlockedDates();
+	}, [desk, myBookingsDates]);
 
 	useEffect(() => {
 		if (initialSelectedDate) {
@@ -31,19 +62,22 @@ const BookingModal = ({
 
 	const renderContent = () => {
 		if (!booking) {
-			const today = new Date().toISOString().split("T")[0];
 			return (
 				<>
-					<h2>Book {desk.name}</h2>
-					<label htmlFor="booking-date">Choose Date: </label>
-					<input
-						type="date"
-						id="booking-date"
-						name="booking-date"
-						min={today}
-						value={selectedDate}
-						onChange={(e) => setSelectedDate(e.target.value)}
-					></input>
+					<div className="form-group">
+						<h2>Book Desk {desk.name}</h2>
+						<label htmlFor="booking-date">Choose Date: </label>
+						<DatePicker
+							selected={selectedDate}
+							onChange={(date) => setSelectedDate(date)}
+							minDate={new Date()}
+							excludeDates={blockedDates}
+							dateFormat="dd/MM/yyyy"
+							className="booking-date"
+							id="booking-date"
+							name="booking-date"
+						/>
+					</div>
 					<button onClick={() => onBook(desk.id, selectedDate)}>
 						Book this desk
 					</button>
@@ -109,29 +143,31 @@ const BookingModal = ({
 		</div>
 	);
 };
+
 BookingModal.propTypes = {
 	desk: PropTypes.shape({
-		id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+		id: PropTypes.string.isRequired,
 		name: PropTypes.string,
 	}),
 	booking: PropTypes.shape({
-		booking_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-		user_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+		booking_id: PropTypes.string,
+		user_id: PropTypes.string,
+		from_date: PropTypes.string,
 	}),
 	onClose: PropTypes.func.isRequired,
 	onBook: PropTypes.func.isRequired,
 	onCancel: PropTypes.func.isRequired,
-	currentUserId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-		.isRequired,
+	currentUserId: PropTypes.string.isRequired,
 	users: PropTypes.arrayOf(
 		PropTypes.shape({
-			id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+			id: PropTypes.string.isRequired,
 			firstName: PropTypes.string,
 			lastName: PropTypes.string,
 		}),
 	).isRequired,
 	error: PropTypes.string,
 	selectedDate: PropTypes.string,
+	myBookingsDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)).isRequired,
 };
 
 export default BookingModal;

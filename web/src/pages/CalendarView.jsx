@@ -5,12 +5,11 @@ import { getBookingsFiltered } from "../services/apiService";
 import "./CalendarView.css";
 
 const CalendarView = () => {
-	const { desks, users, bookingChangeCounter } = useAppContext();
+	const { desks, users } = useAppContext();
 	const [currentDate, setCurrentDate] = useState(new Date());
 	const [bookings, setBookings] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
-	// const [refreshFlag, setRefreshFlag] = useState(0);
 
 	const getWeekDays = () => {
 		const weekDays = [];
@@ -29,8 +28,15 @@ const CalendarView = () => {
 	const weekDays = getWeekDays();
 
 	useEffect(() => {
-		const from = weekDays[0].toISOString().split("T")[0];
-		const to = weekDays[6].toISOString().split("T")[0];
+		const day = new Date(currentDate);
+		const dayOfWeek = day.getDay();
+		const startDate = new Date(day.setDate(day.getDate() - dayOfWeek));
+		const endDate = new Date(startDate);
+		endDate.setDate(startDate.getDate() + 6);
+
+		const from = startDate.toISOString().split("T")[0];
+		const to = endDate.toISOString().split("T")[0];
+
 		setLoading(true);
 		getBookingsFiltered({ from, to })
 			.then((data) => {
@@ -39,7 +45,7 @@ const CalendarView = () => {
 			})
 			.catch((err) => setError(err))
 			.finally(() => setLoading(false));
-	}, [currentDate, bookingChangeCounter]);
+	}, [currentDate]);
 
 	const findBooking = (deskId, date) => {
 		return bookings.find((booking) => {
@@ -67,10 +73,6 @@ const CalendarView = () => {
 		setCurrentDate(newDate);
 	};
 
-	// const refreshBookings = () => {
-	// 	setRefreshFlag((prev) => prev + 1);
-	// };
-
 	if (loading) return <p>Loading...</p>;
 	if (error) return <p>Error: {error.message}</p>;
 
@@ -78,7 +80,7 @@ const CalendarView = () => {
 		<div className="calendar-view">
 			<div className="calendar-header">
 				<button onClick={handlePrevWeek}>&lt; Prev Week</button>
-				<h2>Week of {weekDays[0].toLocaleDateString()}</h2>
+				<h2>Week of {weekDays[0].toLocaleDateString("en-GB")}</h2>
 				<button onClick={handleNextWeek}>Next Week &gt;</button>
 			</div>
 			<table className="calendar-table">
@@ -86,7 +88,16 @@ const CalendarView = () => {
 					<tr>
 						<th>Desk</th>
 						{weekDays.map((day) => (
-							<th key={day.toISOString()}>{day.toLocaleDateString()}</th>
+							<th key={day.toISOString()}>
+								<div className="day-header">
+									<div className="day-name">
+										{day.toLocaleDateString("en-GB", { weekday: "short" })}
+									</div>
+									<div className="day-date">
+										{day.toLocaleDateString("en-GB")}
+									</div>
+								</div>
+							</th>
 						))}
 					</tr>
 				</thead>

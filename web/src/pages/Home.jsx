@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 
 import BookingModal from "../components/BookingModal";
@@ -12,8 +13,15 @@ import {
 import "./Home.css";
 
 const Home = () => {
-	const { desks, users, loading, error, currentUser, notifyBookingChange } =
-		useAppContext();
+	const {
+		desks,
+		users,
+		loading,
+		error,
+		currentUser,
+		myBookings,
+		setMyBookings,
+	} = useAppContext();
 
 	const [bookings, setBookings] = useState([]);
 	const [selectedDesk, setSelectedDesk] = useState(null);
@@ -23,7 +31,6 @@ const Home = () => {
 	const [selectedDate, setSelectedDate] = useState(
 		new Date().toISOString().split("T")[0],
 	);
-
 	const currentUserId = currentUser ? String(currentUser.id) : null;
 
 	useEffect(() => {
@@ -63,7 +70,10 @@ const Home = () => {
 			const newBooking = await createBooking(bookingData);
 			setBookings([...bookings, newBooking]);
 
-			notifyBookingChange(); // Trigger calendar update
+			setMyBookings({
+				...myBookings,
+				upcoming: [...myBookings.upcoming, newBooking],
+			});
 
 			handleCloseModal();
 		} catch (err) {
@@ -75,9 +85,18 @@ const Home = () => {
 		try {
 			await deleteBooking(bookingId);
 			setBookings(bookings.filter((b) => b.booking_id !== bookingId));
+			setMyBookings((prev) => {
+				const updatedUpcoming = prev.upcoming.filter(
+					(b) => b.booking_id !== bookingId,
+				);
 
-			notifyBookingChange(); // Trigger calendar update
+				const updatedPast = prev.past.filter((b) => b.booking_id !== bookingId);
 
+				return {
+					upcoming: updatedUpcoming,
+					past: updatedPast,
+				};
+			});
 			handleCloseModal();
 		} catch (err) {
 			setModalError(err.message || "Failed to cancel booking");
@@ -98,7 +117,7 @@ const Home = () => {
 
 	const formatDate = (dateString) => {
 		const date = new Date(dateString);
-		return date.toLocaleDateString("en-US", {
+		return date.toLocaleDateString("en-GB", {
 			weekday: "long",
 			year: "numeric",
 			month: "long",
@@ -118,7 +137,7 @@ const Home = () => {
 
 				<div className="date-navigation">
 					<button onClick={goToPreviousDay} className="nav-button">
-						← Previous
+						{"<"} Previous
 					</button>
 
 					<div className="date-display">
@@ -126,7 +145,7 @@ const Home = () => {
 					</div>
 
 					<button onClick={goToNextDay} className="nav-button">
-						Next →
+						Next {">"}
 					</button>
 				</div>
 
@@ -148,11 +167,25 @@ const Home = () => {
 						users={users}
 						error={modalError}
 						selectedDate={selectedDate}
+						myBookingsDates={myBookings.upcoming.map(
+							(booking) => new Date(booking.from_date),
+						)}
 					/>
 				)}
 			</div>
 		</div>
 	);
+};
+
+Home.propTypes = {
+	myBookings: PropTypes.shape({
+		upcoming: PropTypes.arrayOf(
+			PropTypes.shape({
+				from_date: PropTypes.string.isRequired,
+			}),
+		).isRequired,
+	}).isRequired,
+	refreshBookings: PropTypes.func.isRequired,
 };
 
 export default Home;

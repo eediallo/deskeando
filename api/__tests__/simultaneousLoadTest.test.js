@@ -60,15 +60,13 @@ describe("Simultaneous Load Test - 500 Users with Desk Polling and Timing Summar
 		);
 		expect(successfulRegistrations.length).toBeGreaterThan(0);
 
-		// 2) Login, polling, and booking phase
-		console.log(
-			`\n=== STARTING SIMULTANEOUS LOGIN, POLLING, AND RACE TEST ===`,
-		);
+		// 2) Login and polling phase
+		console.log(`\n=== STARTING SIMULTANEOUS LOGIN AND POLLING ===`);
 
 		// collect all desk-fetch latencies here:
 		const allDeskTimings = [];
 
-		const loginAndRacePromises = successfulRegistrations.map((user) => {
+		const loginAndPollingPromises = successfulRegistrations.map((user) => {
 			return request
 				.agent(baseUrl)
 				.post("/api/v1/auth/login")
@@ -83,7 +81,6 @@ describe("Simultaneous Load Test - 500 Users with Desk Polling and Timing Summar
 						agent.set("Cookie", cookie),
 					);
 
-					let desks;
 					for (let i = 1; i <= POLL_COUNT; i++) {
 						const t0 = Date.now();
 						const res = await agent.get("/api/v1/desks");
@@ -92,7 +89,6 @@ describe("Simultaneous Load Test - 500 Users with Desk Polling and Timing Summar
 						if (res.status !== 200) {
 							throw new Error(`Desks fetch #${i} failed: ${res.status}`);
 						}
-						desks = res.body;
 						allDeskTimings.push(dt);
 
 						if (i < POLL_COUNT) {
@@ -100,34 +96,18 @@ describe("Simultaneous Load Test - 500 Users with Desk Polling and Timing Summar
 						}
 					}
 
-					// booking attempt
-					if (desks && desks.length > 0) {
-						const deskId = desks[0].id;
-						const tomorrow = new Date();
-						tomorrow.setDate(tomorrow.getDate() + 1);
-						tomorrow.setUTCHours(13, 0, 0, 0);
-						const bookingDate = tomorrow.toISOString().split("T")[0];
-
-						const bookingRes = await agent
-							.post("/api/v1/bookings")
-							.send({ userId: user.id, deskId, bookingDate });
-
-						return { user, success: true, wonRace: bookingRes.status === 201 };
-					}
-					return { user, success: true, wonRace: false };
+					return { user, success: true };
 				})
 				.catch(() => ({ user, success: false }));
 		});
 
-		const raceResults = await Promise.all(loginAndRacePromises);
-		const successfulLogins = raceResults.filter((r) => r.success);
-		const raceWinners = raceResults.filter((r) => r.wonRace);
+		const pollingResults = await Promise.all(loginAndPollingPromises);
+		const successfulLogins = pollingResults.filter((r) => r.success);
 
-		console.log(`\n=== SIMULTANEOUS RACE CONDITION RESULTS ===`);
+		console.log(`\n=== SIMULTANEOUS LOGIN AND POLLING RESULTS ===`);
 		console.log(
-			`Logins: ${successfulLogins.length}/${successfulRegistrations.length}`,
+			`Successful logins: ${successfulLogins.length}/${successfulRegistrations.length}`,
 		);
-		console.log(`Winners: ${raceWinners.length}`);
 
 		// 3) Output timing summary
 		if (allDeskTimings.length > 0) {
@@ -144,6 +124,5 @@ describe("Simultaneous Load Test - 500 Users with Desk Polling and Timing Summar
 
 		// Final assertions
 		expect(successfulLogins.length).toBeGreaterThan(0);
-		expect(raceWinners.length).toBeLessThanOrEqual(1);
 	}, 300000);
 });

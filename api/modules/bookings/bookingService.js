@@ -32,7 +32,18 @@ export async function handleCreateBooking({ userId, deskId, date }) {
 			StatusCodes.CONFLICT,
 		);
 	}
-	return await createBooking({ userId, deskId, date: date });
+
+	const booking = await createBooking({ userId, deskId, date: date });
+
+	// If createBooking returns null, it means there was a conflict
+	if (!booking) {
+		throw new ApiError(
+			"Desk is already booked for this date or time range.",
+			StatusCodes.CONFLICT,
+		);
+	}
+
+	return booking;
 }
 
 export async function getBookingById(id) {

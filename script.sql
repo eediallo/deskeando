@@ -3,6 +3,9 @@ CREATE DATABASE deskeando;
 
 \c deskeando;
 
+-- Enable UUID extension
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 CREATE TABLE "desk"(
    id uuid default uuid_generate_v4() PRIMARY KEY,
    "name" text not null
@@ -23,6 +26,10 @@ CREATE TABLE "booking"(
    "from_date" timestamp with time zone not null,
    "to_date" timestamp with time zone not null
 );
+
+-- Prevent two users from booking the same desk at the same time
+-- This ensures only one booking per desk per date
+CREATE UNIQUE INDEX unique_desk_date ON booking (desk_id, from_date);
 
 
 INSERT INTO "desk" (id, name) VALUES

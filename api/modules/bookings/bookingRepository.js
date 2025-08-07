@@ -107,26 +107,42 @@ export async function createBooking({ userId, deskId, date }) {
 	till.setUTCHours(19, 0, 0, 0);
 	const toDate = till.toISOString();
 
-	const { rows } = await db.query(
-		sql`
-		WITH new_booking AS (
-		INSERT INTO booking (user_id, desk_id, from_date, to_date)
-			VALUES ($1, $2, $3, $4)
-		RETURNING *)
-		SELECT 
-			b.id AS booking_id, 
-			b.desk_id, b.user_id, 
-			b.from_date, b.to_date, 
-			u.first_name, u.last_name, 
-			d.name AS desk_name 
-		FROM 
-			new_booking b 
-		JOIN "user" u ON b.user_id = u.id 
-		JOIN desk d ON b.desk_id = d.id
-  		`,
-		[userId, deskId, date, toDate],
-	);
-	return rows[0];
+	try {
+		const { rows } = await db.query(
+			sql`
+			WITH new_booking AS (
+			INSERT INTO booking (user_id, desk_id, from_date, to_date)
+				VALUES ($1, $2, $3, $4)
+			ON CONFLICT DO NOTHING
+			RETURNING *)
+			SELECT 
+				b.id AS booking_id, 
+				b.desk_id, b.user_id, 
+				b.from_date, b.to_date, 
+				u.first_name, u.last_name, 
+				d.name AS desk_name 
+			FROM 
+				new_booking b 
+			JOIN "user" u ON b.user_id = u.id 
+			JOIN desk d ON b.desk_id = d.id
+			`,
+			[userId, deskId, date, toDate],
+		);
+
+		// If no rows returned, it means there was a conflict
+		if (rows.length === 0) {
+			return null;
+		}
+
+		return rows[0];
+	} catch (error) {
+		// Handle constraint violation errors
+		if (error.code === "23514") {
+			// Check constraint violation
+			return null;
+		}
+		throw error;
+	}
 }
 
 export async function getFilteredBookings({ from, to, userId }) {
